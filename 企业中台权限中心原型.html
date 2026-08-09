@@ -36,6 +36,8 @@
     @keyframes slideIn{from{transform:translateX(30px);opacity:0}to{transform:none;opacity:1}}@keyframes pop{from{transform:translate(-50%,-48%);opacity:0}to{transform:translate(-50%,-50%);opacity:1}}@keyframes toastIn{from{transform:translateY(-8px);opacity:0}to{transform:none;opacity:1}}
     @media(max-width:1100px){.kpis{grid-template-columns:repeat(2,1fr)}.overview-grid,.org-layout{grid-template-columns:1fr}.feature-grid{grid-template-columns:repeat(2,1fr)}.flow{grid-template-columns:1fr}.flow-arrow{height:30px;transform:rotate(90deg)}.doc-layout{grid-template-columns:1fr}.doc-toc{display:none}}
     @media(max-width:780px){body{overflow:auto}.app{display:block;min-height:100%}.brand{height:58px}.topbar{height:54px;padding:0 14px}.sidebar{display:none}.main{padding:16px 12px;overflow:visible}.operator{display:none}.kpis{grid-template-columns:1fr 1fr}.split{grid-template-columns:1fr}.tree-panel{min-height:auto}.binding-grid,.bind-columns,.form-grid{grid-template-columns:1fr}.feature-grid{grid-template-columns:1fr}.auth-summary{grid-template-columns:repeat(2,1fr)}.perm-tree .leaves{grid-template-columns:1fr;padding-left:42px}.page-heading{gap:10px}.page-heading h1{font-size:21px}.mobile-nav{display:flex;overflow:auto;gap:7px;padding:8px 12px;background:var(--nav);position:sticky;top:0;z-index:20}.mobile-nav button{white-space:nowrap;border:1px solid rgba(255,255,255,.13);background:var(--nav-2);color:#d0d5dd;border-radius:6px;padding:6px 9px}.mobile-nav button.active{background:#3d5abb;color:#fff}.doc{padding:22px}.main{min-height:calc(100vh - 112px)}}
+    .create-modal{width:min(880px,94vw);max-height:92vh}.create-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.create-field{min-width:0}.create-field.full{grid-column:1/-1}.create-field label{display:block;color:#475467;font-size:12px;font-weight:650;margin-bottom:5px}.create-field label.required:after{content:" *";color:#f04438}.create-control{width:100%;height:38px;border:1px solid #d0d5dd;border-radius:8px;background:#fff;padding:0 10px;outline:none}.create-control:focus{border-color:#7892e9;box-shadow:0 0 0 3px #eef2ff}.create-field textarea.create-control{height:78px;padding:9px 10px;resize:vertical}.create-field.invalid .create-control{border-color:#f04438;background:#fffafa}.create-error{display:none;color:#d92d20;font-size:10px;margin-top:4px}.create-field.invalid .create-error{display:block}.create-note{display:flex;gap:12px;margin-top:16px;border:1px solid #dbe4ff;background:#f7f9ff;border-radius:8px;padding:11px 12px}.create-note b{white-space:nowrap;color:#2744a7}.create-note span{color:#475467;font-size:12px}.required-note{font-size:11px;color:#667085}.newly-created{animation:newItem 2.4s ease-out}@keyframes newItem{0%,45%{background:#ecfdf3;box-shadow:inset 3px 0 #12b76a}100%{background:transparent;box-shadow:none}}.tree-row.newly-created{border:1px solid #abefdd}.job-list-head{display:flex;justify-content:space-between;align-items:center;margin:18px 0 10px}.job-list-head h3{font-size:13px;margin:0}.org-box .status-mini{margin-left:auto;color:#067647;font-size:10px}.create-type-hint{font-size:11px;color:#667085;margin:-2px 0 14px}.create-modal .modal-body{overscroll-behavior:contain}
+    @media(max-width:780px){.create-form-grid{grid-template-columns:1fr}.create-field.full{grid-column:auto}.create-modal{width:96vw;max-height:94vh}.create-note{display:block}.create-note b{display:block;margin-bottom:3px}.create-modal .modal-foot{gap:10px;align-items:flex-end}.required-note{max-width:100px}.org-layout{grid-template-columns:1fr}}
   </style>
 </head>
 <body>
@@ -83,7 +85,7 @@
     </section>
 
     <section class="page" id="page-users">
-      <div class="page-heading"><div><h1>用户管理</h1><p>查看每位员工的角色、直授权限与数据范围。</p></div><div class="actions"><button class="btn">批量导入</button><button class="btn primary" data-toast="已打开新建用户流程">＋ 新建用户</button></div></div>
+      <div class="page-heading"><div><h1>用户管理</h1><p>查看每位员工的角色、直授权限与数据范围。</p></div><div class="actions"><button class="btn">批量导入</button><button class="btn primary" data-create="user">＋ 新建用户</button></div></div>
       <div class="card"><div class="toolbar"><div class="search"><input aria-label="搜索用户" placeholder="搜索姓名、工号或手机号" data-table-search="user-table"></div><select class="select"><option>全部部门</option><option>客户成功部</option><option>供应链中心</option><option>设计中心</option></select><select class="select"><option>全部状态</option><option>已启用</option><option>已停用</option></select><div class="toolbar-spacer"></div><button class="btn icon" title="刷新" data-toast="列表已刷新">↻</button></div>
         <div class="table-wrap"><table id="user-table"><thead><tr><th>用户</th><th>部门 / 岗位</th><th>角色</th><th>数据范围</th><th>直授</th><th>状态</th><th>最近登录</th><th>操作</th></tr></thead><tbody>
           <tr><td><div class="person"><div class="person-avatar">林</div><div><b>林悦</b><small>EMP-0138 · 138****9201</small></div></div></td><td>客户成功部<br><span class="chip outline">客户顾问</span></td><td><div class="role-stack"><span class="chip blue">客户运营</span><span class="chip outline">基础员工</span></div></td><td>本部门及下级</td><td><span class="chip green">3 项</span></td><td><span class="status">已启用</span></td><td>今天 09:42</td><td><div class="row-actions"><button class="link-btn" data-open-auth="user" data-name="林悦">授权</button><button class="link-btn" data-toast="已打开林悦详情">详情</button></div></td></tr>
@@ -96,7 +98,7 @@
     </section>
 
     <section class="page" id="page-roles">
-      <div class="page-heading"><div><h1>角色管理</h1><p>角色用于复用功能、菜单与资源；数据范围由组织岗位按数据域提供，用户仍可接受额外直授。</p></div><div class="actions"><button class="btn primary" data-toast="已打开新建角色流程">＋ 新建角色</button></div></div>
+      <div class="page-heading"><div><h1>角色管理</h1><p>角色用于复用功能、菜单与资源；数据范围由组织岗位按数据域提供，用户仍可接受额外直授。</p></div><div class="actions"><button class="btn primary" data-create="role">＋ 新建角色</button></div></div>
       <div class="card"><div class="toolbar"><div class="search"><input placeholder="搜索角色名称或编码" aria-label="搜索角色" data-table-search="role-table"></div><select class="select"><option>全部板块</option><option>信息板块</option><option>供应链板块</option><option>设计师板块</option></select><div class="toolbar-spacer"></div><button class="btn icon" data-toast="列表已刷新">↻</button></div>
         <div class="table-wrap"><table id="role-table"><thead><tr><th>角色名称</th><th>角色编码</th><th>适用板块</th><th>功能 / 菜单</th><th>成员</th><th>数据范围来源</th><th>状态</th><th>操作</th></tr></thead><tbody>
           <tr><td><b>客户运营</b><br><span style="color:#98a2b3;font-size:11px">客户日常维护与跟进</span></td><td class="code">crm_operator</td><td><span class="chip blue">信息板块</span></td><td>18 功能 · 4 菜单</td><td>26</td><td>组织岗位</td><td><span class="status">启用</span></td><td><button class="link-btn" data-open-auth="role" data-name="客户运营">授权</button><button class="link-btn" data-toast="已复制角色">复制</button></td></tr>
@@ -108,7 +110,7 @@
     </section>
 
     <section class="page" id="page-features">
-      <div class="page-heading"><div><h1>功能管理</h1><p>用业务动作组织权限；每项功能由开发侧映射到一个或多个接口资源。</p></div><div class="actions"><button class="btn" data-toast="已开始一致性扫描">校验映射</button><button class="btn primary" data-toast="已打开新建功能流程">＋ 新建功能</button></div></div>
+      <div class="page-heading"><div><h1>功能管理</h1><p>用业务动作组织权限；每项功能由开发侧映射到一个或多个接口资源。</p></div><div class="actions"><button class="btn" data-toast="已开始一致性扫描">校验映射</button><button class="btn primary" data-create="feature">＋ 新建功能</button></div></div>
       <div class="card"><div class="toolbar"><div class="search"><input placeholder="搜索功能名称或编码" aria-label="搜索功能" id="feature-search"></div><select class="select"><option>全部业务域</option><option>客户</option><option>采购</option><option>设计协作</option></select><select class="select"><option>全部状态</option><option>映射完整</option><option>待补充资源</option></select><div class="toolbar-spacer"></div><span class="chip green">83 映射完整</span><span class="chip amber">3 待处理</span></div>
         <div class="feature-grid" id="feature-grid">
           <article class="feature-card"><div class="feature-head"><div class="feature-icon">查</div><span class="chip green">3 资源</span></div><h3>查看客户</h3><span class="code">crm.customer.read</span><p>允许进入客户列表、查看客户基本资料与跟进摘要。</p><div class="feature-meta"><span class="chip outline">客户</span><span class="chip blue">已绑菜单</span></div></article>
@@ -122,7 +124,7 @@
     </section>
 
     <section class="page" id="page-menus">
-      <div class="page-heading"><div><h1>菜单管理</h1><p>三级结构：板块 → 目录 → 菜单；菜单可作为功能与资源的“授权包”。</p></div><div class="actions"><button class="btn">调整排序</button><button class="btn primary" data-open-menu>＋ 新建菜单</button></div></div>
+      <div class="page-heading"><div><h1>菜单管理</h1><p>三级结构：板块 → 目录 → 菜单；菜单可作为功能与资源的“授权包”。</p></div><div class="actions"><button class="btn">调整排序</button><button class="btn primary" data-create="menu">＋ 新建菜单</button></div></div>
       <div class="split"><aside class="card tree-panel"><div class="card-head"><h2>目录菜单树</h2><span class="chip outline">24 菜单</span></div><div class="tree-search"><div class="search" style="min-width:0"><input id="menu-tree-search" placeholder="搜索目录或菜单"></div></div><div class="simple-tree" id="menu-tree">
         <div class="tree-row"><span class="tree-caret">▼</span><b>信息板块</b><span class="count">8</span></div><div class="tree-row indent-1"><span class="tree-caret">▼</span>客户管理<span class="count">4</span></div><div class="tree-row indent-2 selected" data-menu-select="客户列表"><span class="tree-caret">•</span>客户列表</div><div class="tree-row indent-2" data-menu-select="客户分群"><span class="tree-caret">•</span>客户分群</div><div class="tree-row indent-1"><span class="tree-caret">▶</span>内容中心<span class="count">4</span></div>
         <div class="tree-row"><span class="tree-caret">▼</span><b>供应链板块</b><span class="count">9</span></div><div class="tree-row indent-1"><span class="tree-caret">▼</span>采购管理<span class="count">5</span></div><div class="tree-row indent-2" data-menu-select="采购订单"><span class="tree-caret">•</span>采购订单</div><div class="tree-row indent-2" data-menu-select="供应商档案"><span class="tree-caret">•</span>供应商档案</div>
@@ -136,7 +138,7 @@
     </section>
 
     <section class="page" id="page-resources">
-      <div class="page-heading"><div><h1>资源管理</h1><p>开发侧维护接口与功能的映射；运营授权时无需理解 HTTP 方法与路径。</p></div><div class="actions"><button class="btn" data-toast="已生成资源差异报告">扫描后端注解</button><button class="btn primary" data-toast="已打开新建资源流程">＋ 新建资源</button></div></div>
+      <div class="page-heading"><div><h1>资源管理</h1><p>开发侧维护接口与功能的映射；运营授权时无需理解 HTTP 方法与路径。</p></div><div class="actions"><button class="btn" data-toast="已生成资源差异报告">扫描后端注解</button><button class="btn primary" data-create="resource">＋ 新建资源</button></div></div>
       <div class="notice" style="margin-bottom:14px"><strong>迁移兼容层</strong>现有形如 “GET /api/crm/example” 的标识继续作为资源编码保留，但不再直接暴露给权限管理员；资源必须绑定至业务功能后方可用于正式授权。</div>
       <div class="card"><div class="toolbar"><div class="search"><input placeholder="搜索接口、资源名称或功能" data-table-search="resource-table"></div><select class="select"><option>全部服务</option><option>CRM 服务</option><option>供应链服务</option><option>设计协作服务</option></select><select class="select"><option>全部映射状态</option><option>已绑定功能</option><option>未绑定</option></select></div><div class="table-wrap"><table id="resource-table"><thead><tr><th>资源名称</th><th>资源标识</th><th>所属服务</th><th>绑定功能</th><th>风险级别</th><th>同步来源</th><th>操作</th></tr></thead><tbody>
         <tr><td><b>查询客户列表</b></td><td class="code">GET /api/crm/customers</td><td>CRM 服务</td><td><span class="chip blue">查看客户</span></td><td><span class="chip green">读</span></td><td>后端注解</td><td><button class="link-btn" data-toast="已打开资源详情">详情</button></td></tr>
@@ -148,14 +150,14 @@
     </section>
 
     <section class="page" id="page-org">
-      <div class="page-heading"><div><h1>组织与岗位</h1><p>组织层级决定数据可见边界，岗位描述职责；二者不替代功能授权。</p></div><div class="actions"><button class="btn" data-toast="组织数据已同步">同步通讯录</button><button class="btn primary" data-toast="已打开新建部门流程">＋ 新建部门</button></div></div>
-      <div class="org-layout"><article class="card"><div class="card-head"><h2>组织架构</h2><span class="chip green">已同步</span></div><div class="org-chart"><div class="org-node"><div class="org-box focus"><div class="org-symbol">司</div><div><b>示范科技有限公司</b><small>根组织 · DEP-001</small></div><span class="count">128 人</span></div><div class="org-children">
+      <div class="page-heading"><div><h1>组织与岗位</h1><p>组织层级决定数据可见边界，岗位描述职责；二者不替代功能授权。</p></div><div class="actions"><button class="btn" data-toast="组织数据已同步">同步通讯录</button><button class="btn" data-create="position">＋ 新建岗位</button><button class="btn primary" data-create="department">＋ 新建部门</button></div></div>
+      <div class="org-layout"><article class="card"><div class="card-head"><h2>组织架构</h2><span class="chip green">已同步</span></div><div class="org-chart"><div class="org-node"><div class="org-box focus"><div class="org-symbol">司</div><div><b>示范科技有限公司</b><small>根组织 · DEP-001</small></div><span class="count">128 人</span></div><div class="org-children" id="root-org-children">
         <div class="org-node"><div class="org-box"><div class="org-symbol">部</div><div><b>客户成功部</b><small>负责人：张宁</small></div><span class="count">34 人</span></div><div class="org-children"><div class="org-node"><div class="org-box"><div class="org-symbol">组</div><div><b>华东客户组</b><small>客户顾问 / 主管</small></div><span class="count">12 人</span></div></div><div class="org-node"><div class="org-box"><div class="org-symbol">组</div><div><b>华南客户组</b><small>客户顾问 / 主管</small></div><span class="count">10 人</span></div></div></div></div>
         <div class="org-node"><div class="org-box"><div class="org-symbol">部</div><div><b>供应链中心</b><small>负责人：陈牧</small></div><span class="count">28 人</span></div></div>
         <div class="org-node"><div class="org-box"><div class="org-symbol">部</div><div><b>设计中心</b><small>负责人：方岚</small></div><span class="count">21 人</span></div></div>
         <div class="org-node"><div class="org-box"><div class="org-symbol">部</div><div><b>财务部</b><small>负责人：沈一</small></div><span class="count">9 人</span></div></div>
       </div></div></div></article>
-      <article class="card"><div class="card-head"><h2>数据范围与岗位</h2><button class="btn sm" data-toast="已打开岗位设置">岗位设置</button></div><div class="card-body"><h3 style="font-size:13px;margin:0 0 10px">标准数据范围</h3><div class="scope-cards"><div class="scope-card"><div class="radio-ui"></div><div><b>无数据</b><p>未配置策略时的安全默认值。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>仅本人</b><p>只看创建人、负责人或归属人为自己的数据。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>本部门</b><p>查看主部门内所有成员的业务数据。</p></div></div><div class="scope-card selected"><div class="radio-ui"></div><div><b>本部门及下级</b><p>适合部门负责人，递归包含所有下级部门。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>指定部门</b><p>从组织树勾选一个或多个部门。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>全部数据</b><p>当前数据域全量可见，属于高风险范围。</p></div></div></div><div class="notice" style="margin:14px 0"><strong>上级可见下级，不等于自动获得功能</strong>数据范围只在用户已有相关业务功能时生效；没有“查看客户”功能，即使是部门负责人也不能查询客户。</div><h3 style="font-size:13px;margin:18px 0 10px">客户成功部岗位</h3><div class="job-list"><div class="job"><div class="job-code">ZG</div><div class="meta"><b>客户主管</b><small>在岗 4 人 · 角色建议：客户运营</small></div><span class="chip blue">部门及下级</span><button class="link-btn" data-toast="已打开岗位详情">详情</button></div><div class="job"><div class="job-code">GW</div><div class="meta"><b>客户顾问</b><small>在岗 25 人 · 角色建议：客户运营</small></div><span class="chip outline">本人</span><button class="link-btn" data-toast="已打开岗位详情">详情</button></div><div class="job"><div class="job-code">ZX</div><div class="meta"><b>实施专员</b><small>在岗 5 人 · 角色建议：基础员工</small></div><span class="chip outline">本部门</span><button class="link-btn" data-toast="已打开岗位详情">详情</button></div></div></div></article></div>
+      <article class="card"><div class="card-head"><h2>数据范围与岗位</h2><button class="btn sm" data-create="position">＋ 新建岗位</button></div><div class="card-body"><h3 style="font-size:13px;margin:0 0 10px">标准数据范围</h3><div class="scope-cards"><div class="scope-card"><div class="radio-ui"></div><div><b>无数据</b><p>未配置策略时的安全默认值。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>仅本人</b><p>只看创建人、负责人或归属人为自己的数据。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>本部门</b><p>查看主部门内所有成员的业务数据。</p></div></div><div class="scope-card selected"><div class="radio-ui"></div><div><b>本部门及下级</b><p>适合部门负责人，递归包含所有下级部门。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>指定部门</b><p>从组织树勾选一个或多个部门。</p></div></div><div class="scope-card"><div class="radio-ui"></div><div><b>全部数据</b><p>当前数据域全量可见，属于高风险范围。</p></div></div></div><div class="notice" style="margin:14px 0"><strong>上级可见下级，不等于自动获得功能</strong>数据范围只在用户已有相关业务功能时生效；没有“查看客户”功能，即使是部门负责人也不能查询客户。</div><div class="job-list-head"><h3>客户成功部岗位</h3><button class="btn sm" data-create="position">＋ 新建岗位</button></div><div class="job-list" id="position-list"><div class="job"><div class="job-code">ZG</div><div class="meta"><b>客户主管</b><small>在岗 4 人 · 角色建议：客户运营</small></div><span class="chip blue">部门及下级</span><button class="link-btn" data-toast="已打开岗位详情">详情</button></div><div class="job"><div class="job-code">GW</div><div class="meta"><b>客户顾问</b><small>在岗 25 人 · 角色建议：客户运营</small></div><span class="chip outline">本人</span><button class="link-btn" data-toast="已打开岗位详情">详情</button></div><div class="job"><div class="job-code">ZX</div><div class="meta"><b>实施专员</b><small>在岗 5 人 · 角色建议：基础员工</small></div><span class="chip outline">本部门</span><button class="link-btn" data-toast="已打开岗位详情">详情</button></div></div></div></article></div>
     </section>
 
     <section class="page" id="page-audit">
@@ -222,10 +224,16 @@
 
 <div class="overlay" id="menu-overlay" aria-hidden="true"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="menu-modal-title"><header class="modal-header"><div><h2 id="menu-modal-title">编辑菜单与授权包</h2><p>客户管理 / 客户列表</p></div><button class="close" data-close="menu" aria-label="关闭">×</button></header><div class="modal-body">
   <div class="form-grid"><div class="field"><label class="required">菜单名称</label><input value="客户列表"></div><div class="field"><label>权限中心显示名</label><input value="客户列表"></div><div class="field"><label class="required">前端路由</label><input value="/info/customer/list"></div><div class="field"><label class="required">菜单编码</label><input class="code" value="MENU_CRM_CUSTOMER_LIST"></div><div class="field"><label>上级目录</label><select><option>信息板块 / 客户管理</option></select></div><div class="field"><label>状态</label><select><option>启用</option><option>停用</option></select></div></div>
-  <div class="bind-columns"><div class="check-list"><div class="check-list-head">绑定业务功能（CORE / OPTIONAL）</div><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature"><span>查看客户</span><small>CORE · 3 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature"><span>新建客户</span><small>OPTIONAL · 2 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature"><span>编辑客户</span><small>OPTIONAL · 3 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature"><span>导出客户</span><small>高风险 OPTIONAL · 1 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" data-kind="feature"><span>合并客户</span><small>OPTIONAL · 2 资源</small></label></div>
-    <div class="check-list"><div class="check-list-head">附加页面资源</div><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="resource"><span>客户字典元数据</span><small class="code">GET /meta</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="resource"><span>客户标签选项</span><small class="code">GET /tags</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="resource"><span>客户统计概览</span><small class="code">GET /summary</small></label><label class="check-row"><input class="bind-check" type="checkbox" data-kind="resource"><span>地区级联选项</span><small class="code">GET /regions</small></label></div></div>
+  <div class="bind-columns"><div class="check-list"><div class="check-list-head">绑定业务功能（CORE / OPTIONAL）</div><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature" data-resource-count="3"><span>查看客户</span><small>CORE · 3 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature" data-resource-count="2"><span>新建客户</span><small>OPTIONAL · 2 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature" data-resource-count="3"><span>编辑客户</span><small>OPTIONAL · 3 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="feature" data-resource-count="1"><span>导出客户</span><small>高风险 OPTIONAL · 1 资源</small></label><label class="check-row"><input class="bind-check" type="checkbox" data-kind="feature" data-resource-count="2"><span>合并客户</span><small>OPTIONAL · 2 资源</small></label></div>
+    <div class="check-list"><div class="check-list-head">附加页面资源</div><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="resource" data-resource-count="1"><span>客户字典元数据</span><small class="code">GET /meta</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="resource" data-resource-count="1"><span>客户标签选项</span><small class="code">GET /tags</small></label><label class="check-row"><input class="bind-check" type="checkbox" checked data-kind="resource" data-resource-count="1"><span>客户统计概览</span><small class="code">GET /summary</small></label><label class="check-row"><input class="bind-check" type="checkbox" data-kind="resource" data-resource-count="1"><span>地区级联选项</span><small class="code">GET /regions</small></label></div></div>
   <div class="package-preview"><b>打包授权结果</b><p>当前包配置 <strong id="bind-feature-count">4</strong> 项功能与 <strong id="bind-resource-count">12</strong> 个资源：1 项 CORE 自动带出，3 项 OPTIONAL 由角色或用户单独选择；高风险 OPTIONAL 永不自动授予。</p></div>
 </div><footer class="modal-foot"><span style="color:#667085;font-size:11px">发布前先预览受影响主体；修改绑定不会隐式删除其他来源权限。</span><div class="foot-right"><button class="btn" data-close="menu">取消</button><button class="btn primary" id="save-menu">保存绑定</button></div></footer></section></div>
+
+<div class="overlay" id="create-overlay" aria-hidden="true"><form class="modal create-modal" id="create-form" role="dialog" aria-modal="true" aria-labelledby="create-title" novalidate>
+  <header class="modal-header"><div><h2 id="create-title">新建对象</h2><p id="create-subtitle">填写基础信息后创建</p></div><button type="button" class="close" data-close="create" aria-label="关闭">×</button></header>
+  <div class="modal-body"><p class="create-type-hint" id="create-hint"></p><div class="create-form-grid" id="create-fields"></div><div class="create-note"><b>创建后可继续配置</b><span id="create-note">所有创建动作均会生成模拟审计记录。</span></div></div>
+  <footer class="modal-foot"><span class="required-note">* 为必填项</span><div class="foot-right"><button type="button" class="btn" data-close="create">取消</button><button type="submit" class="btn primary" id="save-create">保存并创建</button></div></footer>
+</form></div>
 
 <div class="toast-stack" id="toast-stack" aria-live="polite"></div>
 
@@ -1663,22 +1671,140 @@ PermissionContext 命中率与计算耗时
   function toast(title,detail='操作已在原型中模拟完成',type='success'){
     const el=document.createElement('div');el.className='toast'+(type==='warn'?' warn':'');el.innerHTML='<b>'+escapeHtml(title)+'</b><span>'+escapeHtml(detail)+'</span>';$('#toast-stack').appendChild(el);setTimeout(()=>el.remove(),3000);
   }
-  $$('[data-toast]').forEach(b=>b.addEventListener('click',()=>toast(b.dataset.toast)));
+  document.addEventListener('click',event=>{const button=event.target.closest?.('[data-toast]');if(button)toast(button.dataset.toast)});
+  const createSchemas={
+    user:{title:'新建用户',subtitle:'建立账号、主任职与初始角色',hint:'用户创建后可继续通过授权抽屉配置少量直授和有效期。',note:'系统先创建用户与任职；功能权限来自初始角色及后续直授。',fields:[
+      {name:'name',label:'姓名',required:true,placeholder:'例如：许清'},{name:'employeeNo',label:'员工编号',required:true,placeholder:'例如：EMP-0152'},
+      {name:'mobile',label:'手机号',required:true,placeholder:'11 位手机号'},{name:'department',label:'主部门',required:true,type:'select',options:['客户成功部','供应链中心','设计中心','财务部']},
+      {name:'position',label:'主岗位',required:true,type:'select',options:['客户顾问','客户主管','采购专员','设计师','会计']},{name:'role',label:'初始角色',required:true,type:'select',options:['基础员工','客户运营','采购主管','设计协作','财务专员']},
+      {name:'status',label:'账号状态',required:true,type:'select',options:['启用','停用'],default:'启用'}
+    ]},
+    role:{title:'新建角色',subtitle:'创建可复用的业务能力模板',hint:'角色只承载菜单、功能与资源；数据范围由组织岗位按数据域提供。',note:'新角色成员数为 0；创建后进入授权抽屉配置能力，不复制任何成员。',fields:[
+      {name:'name',label:'角色名称',required:true,placeholder:'例如：销售专员'},{name:'code',label:'角色编码',required:true,placeholder:'例如：sales_specialist'},
+      {name:'board',label:'适用板块',required:true,type:'select',options:['通用','信息板块','供应链板块','设计师板块'],default:'通用'},{name:'template',label:'权限初始化',type:'select',options:['空白角色','复制基础员工','复制客户运营','复制采购主管'],default:'空白角色'},
+      {name:'status',label:'状态',required:true,type:'select',options:['启用','停用'],default:'启用'},{name:'description',label:'职责说明',required:true,type:'textarea',full:true,placeholder:'说明适用职责与不应包含的高风险能力'}
+    ]},
+    feature:{title:'新建功能',subtitle:'用稳定业务语义定义可授权动作',hint:'编码建议使用 {domain}.{object}.{action}，例如 crm.customer.merge。',note:'未映射资源的功能会以“待映射”草稿回显，不能直接用于正式放行。',fields:[
+      {name:'name',label:'功能名称',required:true,placeholder:'例如：合并客户'},{name:'code',label:'功能编码',required:true,placeholder:'crm.customer.merge'},
+      {name:'domain',label:'业务域',required:true,type:'select',options:['客户','采购','库存','设计协作','系统管理'],default:'客户'},{name:'action',label:'动作类型',required:true,type:'select',options:['查看','新建','编辑','删除','导出','审批','执行']},
+      {name:'risk',label:'风险等级',required:true,type:'select',options:['普通','写操作','高风险'],default:'普通'},{name:'resource',label:'首个资源映射',placeholder:'可稍后补充，例如 POST /api/...'},
+      {name:'description',label:'业务说明',required:true,type:'textarea',full:true,placeholder:'说明允许用户执行什么业务动作'}
+    ]},
+    menu:{title:'新建页面菜单',subtitle:'在既有板块与目录下建立页面菜单',hint:'本入口只创建页面菜单，不会复用或覆盖当前“客户列表”的编辑值。',note:'页面菜单创建后可在“编辑绑定”中区分 CORE 与 OPTIONAL；高风险功能不得成为 CORE。',fields:[
+      {name:'type',label:'节点类型',required:true,type:'select',options:['页面菜单'],default:'页面菜单'},{name:'name',label:'显示名称',required:true,placeholder:'例如：客户公海'},
+      {name:'code',label:'菜单编码',required:true,placeholder:'MENU_CRM_CUSTOMER_POOL'},{name:'parent',label:'上级节点',required:true,type:'select',options:['信息板块 / 客户管理','信息板块 / 内容中心','供应链板块 / 采购管理','设计师板块 / 项目协作'],default:'信息板块 / 客户管理'},
+      {name:'route',label:'前端路由',required:true,placeholder:'/info/customer/pool'},{name:'component',label:'页面组件',required:true,placeholder:'crm/customer-pool/index'},
+      {name:'sort',label:'显示顺序',required:true,placeholder:'例如：30'},{name:'status',label:'状态',required:true,type:'select',options:['启用','停用'],default:'启用'},
+      {name:'core',label:'CORE 功能',placeholder:'例如：查看客户'},{name:'optional',label:'OPTIONAL 功能',placeholder:'逗号分隔，例如：编辑客户,导出客户'}
+    ]},
+    resource:{title:'新建资源',subtitle:'注册后端执行点或受控资产',hint:'资源标识继续兼容现有 METHOD + PATH，但授权管理员只看到绑定后的业务功能。',note:'如果选择“待绑定”，新行会明确显示映射待处理，不会假定任何功能资源数量。',fields:[
+      {name:'name',label:'资源名称',required:true,placeholder:'例如：合并客户档案'},{name:'identifier',label:'资源标识',required:true,placeholder:'POST /api/crm/customers/merge'},
+      {name:'service',label:'所属服务',required:true,type:'select',options:['CRM 服务','供应链服务','设计协作服务','权限中心服务'],default:'CRM 服务'},{name:'feature',label:'绑定功能',required:true,type:'select',options:['查看客户','编辑客户','导出客户','审批采购单','提交设计稿','待绑定'],default:'待绑定'},
+      {name:'risk',label:'风险级别',required:true,type:'select',options:['读','写','敏感'],default:'读'},{name:'source',label:'登记来源',required:true,type:'select',options:['手工登记','后端注解','扫描发现'],default:'手工登记'},
+      {name:'description',label:'用途说明',type:'textarea',full:true,placeholder:'说明被哪些页面或服务使用'}
+    ]},
+    department:{title:'新建部门',subtitle:'在单根组织树下建立部门或小组',hint:'上级部门决定组织闭包关系，也将参与“本部门及下级”的数据范围计算。',note:'新部门初始人数为 0；停用前应检查子部门、成员、岗位和数据策略。',fields:[
+      {name:'name',label:'部门名称',required:true,placeholder:'例如：渠道运营部'},{name:'code',label:'部门编码',required:true,placeholder:'例如：DEP-012'},
+      {name:'parent',label:'上级部门',required:true,type:'select',options:['示范科技有限公司','客户成功部','供应链中心','设计中心'],default:'示范科技有限公司'},{name:'type',label:'组织类型',required:true,type:'select',options:['部门','小组'],default:'部门'},
+      {name:'manager',label:'负责人',required:true,placeholder:'输入员工姓名'},{name:'sort',label:'显示顺序',required:true,placeholder:'例如：20'},{name:'status',label:'状态',required:true,type:'select',options:['启用','停用'],default:'启用'},
+      {name:'description',label:'职责说明',type:'textarea',full:true}
+    ]},
+    position:{title:'新建岗位',subtitle:'定义职责与数据域范围模板',hint:'岗位和角色保持分离：岗位可给出建议角色，但不会自动授予任何功能。',note:'原型以一个默认数据域回显；正式实现可为同一岗位配置多个数据域策略。',fields:[
+      {name:'name',label:'岗位名称',required:true,placeholder:'例如：渠道主管'},{name:'code',label:'岗位编码',required:true,placeholder:'POS-CHANNEL-LEAD'},
+      {name:'department',label:'所属部门',required:true,type:'select',options:['客户成功部','供应链中心','设计中心','财务部'],default:'客户成功部'},{name:'domain',label:'数据域',required:true,type:'select',options:['客户域','采购域','合同域','设计任务域'],default:'客户域'},
+      {name:'scope',label:'数据范围',required:true,type:'select',options:['无数据','仅本人','本部门','本部门及下级','指定部门','全部数据'],default:'仅本人'},{name:'role',label:'建议角色',type:'select',options:['无','基础员工','客户运营','采购主管','设计协作'],default:'无'},
+      {name:'status',label:'状态',required:true,type:'select',options:['启用','停用'],default:'启用'},{name:'description',label:'岗位职责',required:true,type:'textarea',full:true}
+    ]}
+  };
+  let currentCreateKind=null;
+  function renderCreateField(field){
+    const attrs='name="'+escapeHtml(field.name)+'" class="create-control"'+(field.required?' data-required="true"':'');
+    let control;
+    if(field.type==='select')control='<select '+attrs+'><option value="">请选择</option>'+field.options.map(o=>'<option'+(field.default===o?' selected':'')+'>'+escapeHtml(o)+'</option>').join('')+'</select>';
+    else if(field.type==='textarea')control='<textarea '+attrs+' placeholder="'+escapeHtml(field.placeholder||'')+'"></textarea>';
+    else control='<input '+attrs+' placeholder="'+escapeHtml(field.placeholder||'')+'" value="'+escapeHtml(field.default||'')+'">';
+    return '<div class="create-field'+(field.full?' full':'')+'" data-field="'+escapeHtml(field.name)+'"><label class="'+(field.required?'required':'')+'">'+escapeHtml(field.label)+'</label>'+control+'<span class="create-error">请填写'+escapeHtml(field.label)+'</span></div>';
+  }
+  function openCreate(kind){
+    const schema=createSchemas[kind];if(!schema)return;currentCreateKind=kind;$('#create-title').textContent=schema.title;$('#create-subtitle').textContent=schema.subtitle;$('#create-hint').textContent=schema.hint;$('#create-note').textContent=schema.note;$('#create-fields').innerHTML=schema.fields.map(renderCreateField).join('');
+    $$('.create-control',$('#create-form')).forEach(c=>c.addEventListener('input',()=>{c.closest('.create-field').classList.remove('invalid');c.removeAttribute('aria-invalid')}));
+    openOverlay('create-overlay');setTimeout(()=>$('.create-control',$('#create-form'))?.focus(),40);
+  }
+  $$('[data-create]').forEach(b=>b.addEventListener('click',()=>openCreate(b.dataset.create)));
   function openOverlay(id){const o=$('#'+id);o.classList.add('open');o.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'}
   function closeOverlay(id){const o=$('#'+id);o.classList.remove('open');o.setAttribute('aria-hidden','true');document.body.style.overflow=''}
   $$('[data-close="auth"]').forEach(b=>b.onclick=()=>closeOverlay('auth-overlay'));
   $$('[data-close="menu"]').forEach(b=>b.onclick=()=>closeOverlay('menu-overlay'));
+  $$('[data-close="create"]').forEach(b=>b.onclick=()=>closeOverlay('create-overlay'));
   $$('.overlay').forEach(o=>o.addEventListener('mousedown',e=>{if(e.target===o)closeOverlay(o.id)}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'){$$('.overlay.open').forEach(o=>closeOverlay(o.id))}});
 
+  function setCreateError(name,message){const field=$('[data-field="'+name+'"]',$('#create-form'));if(!field)return;field.classList.add('invalid');const control=$('.create-control',field);control?.setAttribute('aria-invalid','true');$('.create-error',field).textContent=message}
+  function getCreateValues(){const values={};new FormData($('#create-form')).forEach((value,key)=>values[key]=String(value).trim());return values}
+  function duplicateIn(selector,value){return $$(selector).some(node=>{const text=node.textContent.trim().toLowerCase(),wanted=value.toLowerCase();return text===wanted||text.split('·')[0].trim()===wanted})}
+  function validateCreate(values){
+    let valid=true;$$('.create-field',$('#create-form')).forEach(field=>field.classList.remove('invalid'));
+    $$('[data-required="true"]',$('#create-form')).forEach(control=>{if(!control.value.trim()){setCreateError(control.name,'请填写'+$('label',control.closest('.create-field')).textContent.replace(' *',''));valid=false}});
+    if(!valid)return false;
+    if(currentCreateKind==='user'){
+      if(!/^EMP-\d{4,}$/i.test(values.employeeNo)){setCreateError('employeeNo','请使用 EMP-0152 形式');valid=false}
+      if(!/^1\d{10}$/.test(values.mobile)){setCreateError('mobile','请输入 11 位手机号');valid=false}
+      if(duplicateIn('#user-table tbody .person small',values.employeeNo)){setCreateError('employeeNo','员工编号已存在');valid=false}
+    }
+    if(currentCreateKind==='role'&&(!/^[a-z][a-z0-9_]*$/.test(values.code)||duplicateIn('#role-table tbody .code',values.code))){setCreateError('code',duplicateIn('#role-table tbody .code',values.code)?'角色编码已存在':'仅使用小写字母、数字和下划线');valid=false}
+    if(currentCreateKind==='feature'&&(!/^[a-z][a-z0-9]*(\.[a-z0-9]+){2,}$/.test(values.code)||duplicateIn('#feature-grid .code',values.code))){setCreateError('code',duplicateIn('#feature-grid .code',values.code)?'功能编码已存在':'请使用 domain.object.action 形式');valid=false}
+    if(currentCreateKind==='menu'){
+      if(!/^MENU_[A-Z0-9_]+$/.test(values.code)){setCreateError('code','请使用 MENU_ 开头的大写编码');valid=false}
+      if(!/^\//.test(values.route)){setCreateError('route','路由必须以 / 开头');valid=false}
+      if(!/^\d+$/.test(values.sort)){setCreateError('sort','请输入数字排序值');valid=false}
+      const highRisk=(values.core||'').match(/导出|删除|审批|作废/);if(highRisk){setCreateError('core','高风险功能只能配置为 OPTIONAL');valid=false}
+    }
+    if(currentCreateKind==='resource'&&!/^(GET|POST|PUT|PATCH|DELETE)\s+\/\S+$/i.test(values.identifier)){setCreateError('identifier','请使用 METHOD /path 格式');valid=false}
+    if(currentCreateKind==='department'&&!/^\d+$/.test(values.sort)){setCreateError('sort','请输入数字排序值');valid=false}
+    if((currentCreateKind==='department'||currentCreateKind==='position')&&!/^[A-Za-z][A-Za-z0-9_-]+$/.test(values.code)){setCreateError('code','请使用字母开头的稳定编码');valid=false}
+    return valid;
+  }
+  function bumpBadge(page){const badge=$('[data-nav="'+page+'"] .nav-badge');if(badge&&!Number.isNaN(Number(badge.textContent)))badge.textContent=String(Number(badge.textContent)+1)}
+  function flash(node){node.classList.add('newly-created');setTimeout(()=>node.classList.remove('newly-created'),2600)}
+  function bindCreatedAuth(button,kind,name){button?.addEventListener('click',()=>openAuth(kind,name))}
+  function insertCreated(kind,v){
+    let target=null;
+    if(kind==='user'){
+      const row=document.createElement('tr'),masked=v.mobile.slice(0,3)+'****'+v.mobile.slice(-4);row.innerHTML='<td><div class="person"><div class="person-avatar">'+escapeHtml(v.name.charAt(0))+'</div><div><b>'+escapeHtml(v.name)+'</b><small>'+escapeHtml(v.employeeNo)+' · '+escapeHtml(masked)+'</small></div></div></td><td>'+escapeHtml(v.department)+'<br><span class="chip outline">'+escapeHtml(v.position)+'</span></td><td><div class="role-stack"><span class="chip blue">'+escapeHtml(v.role)+'</span></div></td><td>由岗位策略计算</td><td><span class="chip outline">—</span></td><td><span class="status'+(v.status==='停用'?' off':'')+'">'+escapeHtml(v.status)+'</span></td><td>尚未登录</td><td><div class="row-actions"><button class="link-btn">授权</button><button class="link-btn" data-toast="已打开用户详情">详情</button></div></td>';$('#user-table tbody').prepend(row);bindCreatedAuth($('.row-actions .link-btn',row),'user',v.name);target=row;bumpBadge('users');const p=$('#page-users .pager>span');if(p)p.textContent='共 '+$$('#user-table tbody tr').length+' 条当前演示记录 · 新用户已置顶';
+    }else if(kind==='role'){
+      const row=document.createElement('tr'),ability=v.template&&v.template!=='空白角色'?'已复制模板':'0 功能 · 0 菜单';row.innerHTML='<td><b>'+escapeHtml(v.name)+'</b><br><span style="color:#98a2b3;font-size:11px">'+escapeHtml(v.description)+'</span></td><td class="code">'+escapeHtml(v.code)+'</td><td><span class="chip '+(v.board==='通用'?'outline':'blue')+'">'+escapeHtml(v.board)+'</span></td><td>'+escapeHtml(ability)+'</td><td>0</td><td>组织岗位</td><td><span class="status'+(v.status==='停用'?' off':'')+'">'+escapeHtml(v.status)+'</span></td><td><button class="link-btn created-auth">授权</button><button class="link-btn" data-toast="已打开复制流程">复制</button></td>';$('#role-table tbody').prepend(row);bindCreatedAuth($('.created-auth',row),'role',v.name);target=row;bumpBadge('roles');
+    }else if(kind==='feature'){
+      const card=document.createElement('article'),mapped=Boolean(v.resource),resourceLabel=mapped?'1 资源':'待映射';card.className='feature-card';card.innerHTML='<div class="feature-head"><div class="feature-icon">'+escapeHtml(v.name.charAt(0))+'</div><span class="chip '+(mapped?'green':'amber')+'">'+resourceLabel+'</span></div><h3>'+escapeHtml(v.name)+'</h3><span class="code">'+escapeHtml(v.code)+'</span><p>'+escapeHtml(v.description)+'</p><div class="feature-meta"><span class="chip outline">'+escapeHtml(v.domain)+'</span><span class="chip '+(v.risk==='高风险'?'amber':'outline')+'">'+escapeHtml(v.risk)+'</span></div>';$('#feature-grid').prepend(card);target=card;bumpBadge('features');
+    }else if(kind==='menu'){
+      const row=document.createElement('div');row.className='tree-row indent-2';row.dataset.menuSelect=v.name;row.innerHTML='<span class="tree-caret">•</span>'+escapeHtml(v.name);const parentName=v.parent.split('/').pop().trim(),rows=$$('#menu-tree>.tree-row'),parent=rows.find(r=>!r.classList.contains('indent-2')&&r.textContent.includes(parentName));let anchor=parent||rows[rows.length-1];while(anchor?.nextElementSibling?.classList.contains('indent-2'))anchor=anchor.nextElementSibling;if(anchor)anchor.insertAdjacentElement('afterend',row);else $('#menu-tree').appendChild(row);
+      const activate=()=>{$$('[data-menu-select]').forEach(x=>x.classList.remove('selected'));row.classList.add('selected');$('#menu-title').textContent=v.name;const code=$('#menu-title').parentElement.querySelector('.code');if(code)code.textContent=v.route+' · '+v.code;const names=[v.core,...(v.optional||'').split(/[,，]/)].map(x=>x.trim()).filter(Boolean);$('#menu-feature-count').textContent=String(names.length);$('#menu-resource-count').textContent='0';const boxes=$$('.menu-details .binding-box');if(boxes[0])boxes[0].innerHTML='<h4>功能绑定</h4>'+(names.length?names.map((n,i)=>'<div class="binding-item"><div class="binding-name"><b>'+escapeHtml(n)+'</b><small>'+(i===0&&v.core?'CORE':'OPTIONAL')+'</small></div><span class="chip outline">待映射核对</span></div>').join(''):'<p style="color:#98a2b3">尚未绑定功能</p>');if(boxes[1])boxes[1].innerHTML='<h4>附加资源</h4><p style="color:#98a2b3">尚未绑定附加资源</p>';const bundle=$('.menu-details .bundle p');if(bundle)bundle.textContent='新菜单已创建。当前仅记录功能名称，资源数为 0；请通过“编辑绑定”选择已登记功能并展开真实资源映射。'};row.addEventListener('click',activate);activate();target=row;bumpBadge('menus');const count=$('#page-menus .tree-panel .card-head .chip');if(count){const n=parseInt(count.textContent,10);if(!Number.isNaN(n))count.textContent=(n+1)+' 菜单'}
+    }else if(kind==='resource'){
+      const row=document.createElement('tr');row.innerHTML='<td><b>'+escapeHtml(v.name)+'</b></td><td class="code">'+escapeHtml(v.identifier)+'</td><td>'+escapeHtml(v.service)+'</td><td><span class="chip '+(v.feature==='待绑定'?'amber':'blue')+'">'+escapeHtml(v.feature)+'</span></td><td><span class="chip '+(v.risk==='敏感'?'red':v.risk==='写'?'amber':'green')+'">'+escapeHtml(v.risk)+'</span></td><td>'+escapeHtml(v.source)+'</td><td><button class="link-btn" data-toast="已打开资源详情">详情</button></td>';$('#resource-table tbody').prepend(row);target=row;bumpBadge('resources');
+    }else if(kind==='department'){
+      const node=document.createElement('div');node.className='org-node';node.innerHTML='<div class="org-box"><div class="org-symbol">'+(v.type==='小组'?'组':'部')+'</div><div><b>'+escapeHtml(v.name)+'</b><small>'+escapeHtml(v.code)+' · 上级：'+escapeHtml(v.parent)+' · 负责人：'+escapeHtml(v.manager)+'</small></div><span class="status-mini">'+escapeHtml(v.status)+'</span><span class="count">0 人</span></div>';if(v.parent!=='示范科技有限公司')node.style.marginLeft='16px';$('#root-org-children').prepend(node);target=node;
+    }else if(kind==='position'){
+      const row=document.createElement('div');row.className='job';const mark=v.code.replace(/^POS[-_]?/i,'').slice(0,2).toUpperCase()||'岗';row.innerHTML='<div class="job-code">'+escapeHtml(mark)+'</div><div class="meta"><b>'+escapeHtml(v.name)+'</b><small>在岗 0 人 · '+escapeHtml(v.department)+' · '+escapeHtml(v.domain)+' · 角色建议：'+escapeHtml(v.role||'无')+'</small></div><span class="chip '+(v.scope==='全部数据'?'red':'blue')+'">'+escapeHtml(v.scope)+'</span><button class="link-btn" data-toast="已打开岗位详情">详情</button>';$('#position-list').prepend(row);target=row;
+    }
+    if(target){flash(target);setTimeout(()=>target.scrollIntoView({behavior:'smooth',block:'center'}),80)}
+  }
+  $('#create-form').addEventListener('submit',event=>{
+    event.preventDefault();if(!currentCreateKind)return;const values=getCreateValues();if(!validateCreate(values)){const first=$('.create-field.invalid .create-control',$('#create-form'));first?.focus();return}
+    const kind=currentCreateKind,label=createSchemas[kind].title.replace('新建','');insertCreated(kind,values);closeOverlay('create-overlay');toast(label+'已创建','“'+values.name+'”已在当前页面回显');currentCreateKind=null;
+  });
+
   const initialEditable=[];
+  let authMode='user',authGrantLabel='用户直授';
   function snapshotTree(){initialEditable.length=0;$$('.leaf-check:not(:disabled)', $('#perm-tree')).forEach(x=>initialEditable.push(x.checked));}
   function restoreTree(){let i=0;$$('.leaf-check:not(:disabled)', $('#perm-tree')).forEach(x=>{x.checked=initialEditable[i++]});refreshSources();updateTreeState();toast('已撤销本次修改','授权尚未保存','warn')}
   function openAuth(kind,name){
-    const isRole=kind==='role';$('#auth-title').textContent=(isRole?'编辑角色“':'为')+name+(isRole?'”授权':'授权');
+    const isRole=kind==='role';authMode=isRole?'role':'user';authGrantLabel=isRole?'角色授权':'用户直授';$('#auth-title').textContent=(isRole?'编辑角色“':'为')+name+(isRole?'”授权':'授权');
     $('#auth-subtitle').textContent=isRole?'本次设置将应用到该角色的所有成员':'用户直授与角色继承在保存后共同构成有效权限';
     $('#effective-subject').textContent=name+'的有效权限';
-    snapshotTree();updateTreeState();openOverlay('auth-overlay');
+    const stats=$$('.mini-stat span',$('#auth-overlay'));if(stats[0])stats[0].textContent=isRole?'模板预置':'角色继承';if(stats[1])stats[1].textContent=isRole?'角色授权':'用户直授';
+    const scopeTab=$('[data-auth-tab="scope"]');scopeTab.style.display=isRole?'none':'';if(isRole)$('[data-auth-tab="permission"]').click();
+    const note=$('#auth-overlay .effective-note');if(note){if(!note.dataset.userText)note.dataset.userText=note.innerHTML;note.innerHTML=isRole?'角色只配置菜单、功能与资源；成员的数据范围来自组织岗位的有效任职。':note.dataset.userText}
+    $$('#auth-overlay .effective-body .chip.green').forEach(chip=>chip.textContent=chip.textContent.replace(/ · (直授|用户直授|角色授权)$/,' · '+(isRole?'角色授权':'直授')));
+    refreshSources();snapshotTree();updateTreeState();openOverlay('auth-overlay');
   }
   $$('[data-open-auth]').forEach(b=>b.addEventListener('click',()=>openAuth(b.dataset.openAuth,b.dataset.name)));
   $$('[data-auth-tab]').forEach(t=>t.onclick=()=>{$$('[data-auth-tab]').forEach(x=>x.classList.toggle('active',x===t));$$('[data-auth-panel]').forEach(x=>x.classList.toggle('active',x.dataset.authPanel===t.dataset.authTab))});
@@ -1690,7 +1816,7 @@ PermissionContext 命中率与计算耗时
     $('#direct-count').textContent=direct;$('#effective-count').textContent=all+12;
   }
   function refreshSources(){
-    $$('.leaf-check:not(:disabled)',$('#perm-tree')).forEach(c=>{const s=$('.source',c.closest('.perm-leaf'));if(c.checked){c.dataset.source='direct';s.textContent='用户直授';s.className='source direct'}else{delete c.dataset.source;s.textContent='未授予';s.className='source available'}})
+    $$('.leaf-check:not(:disabled)',$('#perm-tree')).forEach(c=>{const s=$('.source',c.closest('.perm-leaf'));if(c.checked){c.dataset.source='direct';s.textContent=authGrantLabel;s.className='source direct'}else{delete c.dataset.source;s.textContent='未授予';s.className='source available'}})
   }
   $('#perm-tree').addEventListener('change',e=>{
     if(e.target.classList.contains('branch-check')){const d=e.target.closest('details');$$('.leaf-check:not(:disabled)',d).forEach(x=>x.checked=e.target.checked);refreshSources()}
@@ -1707,12 +1833,13 @@ PermissionContext 命中率与计算耗时
   });
   $$('input[name="data-scope"]').forEach(r=>r.onchange=()=>{$('#dept-select').classList.toggle('show',r.checked&&r.value==='指定部门');if(r.checked)$('#scope-preview').textContent=r.value});
   $('#undo-auth').onclick=restoreTree;
-  $('#save-auth').onclick=()=>{toast('授权已保存','有效权限快照已更新，审计记录已生成');closeOverlay('auth-overlay')};
+  $('#save-auth').onclick=()=>{toast(authMode==='role'?'角色授权已保存':'用户授权已保存','有效权限快照已更新，审计记录已生成');closeOverlay('auth-overlay')};
 
   $$('[data-open-menu]').forEach(b=>b.onclick=()=>openOverlay('menu-overlay'));
-  function updateBinding(){const fs=$$('.bind-check[data-kind="feature"]:checked').length, rs=$$('.bind-check[data-kind="resource"]:checked').length;$('#bind-feature-count').textContent=fs;$('#bind-resource-count').textContent=fs*2+1+rs}
+  function bindingTotals(){const checks=$$('.bind-check:checked',$('#menu-overlay'));return {features:checks.filter(c=>c.dataset.kind==='feature').length,resources:checks.reduce((sum,c)=>sum+Number(c.dataset.resourceCount||0),0)}}
+  function updateBinding(){const totals=bindingTotals();$('#bind-feature-count').textContent=totals.features;$('#bind-resource-count').textContent=totals.resources}
   $$('.bind-check').forEach(c=>c.onchange=updateBinding);
-  $('#save-menu').onclick=()=>{const fs=$$('.bind-check[data-kind="feature"]:checked').length,rs=fs*2+1+$$('.bind-check[data-kind="resource"]:checked').length;$('#menu-feature-count').textContent=fs;$('#menu-resource-count').textContent=rs;toast('菜单绑定已保存',fs+' 项包功能已配置；仅 CORE 自动带出');closeOverlay('menu-overlay')};
+  $('#save-menu').onclick=()=>{const totals=bindingTotals();$('#menu-feature-count').textContent=totals.features;$('#menu-resource-count').textContent=totals.resources;toast('菜单绑定已保存',totals.features+' 项包功能、'+totals.resources+' 个真实映射资源；仅 CORE 自动带出');closeOverlay('menu-overlay')};
   $$('[data-menu-select]').forEach(r=>r.onclick=()=>{$$('[data-menu-select]').forEach(x=>x.classList.remove('selected'));r.classList.add('selected');$('#menu-title').textContent=r.dataset.menuSelect;toast('已切换菜单',r.dataset.menuSelect+'的绑定详情已加载')});
   $('#menu-tree-search').oninput=e=>{const q=e.target.value.trim().toLowerCase();$$('#menu-tree .tree-row').forEach(r=>r.style.display=!q||r.textContent.toLowerCase().includes(q)?'':'none')};
   $$('[data-table-search]').forEach(i=>i.oninput=e=>{const t=$('#'+i.dataset.tableSearch),q=e.target.value.trim().toLowerCase();$$('tbody tr',t).forEach(r=>r.style.display=!q||r.textContent.toLowerCase().includes(q)?'':'none')});
