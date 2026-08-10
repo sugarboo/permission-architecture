@@ -1,0 +1,44 @@
+{
+  "name": "permission-nuxt-demo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "predev": "npm run db:setup",
+    "dev": "nuxt dev --host 127.0.0.1",
+    "prebuild": "npm run db:setup",
+    "build": "nuxt build",
+    "preview": "nuxt preview",
+    "typecheck": "nuxt typecheck",
+    "db:generate": "drizzle-kit generate",
+    "db:setup": "tsx scripts/setup-db.ts",
+    "db:reset": "tsx scripts/setup-db.ts --reset",
+    "test": "vitest run",
+    "test:contract": "tsx scripts/api-contract-test.ts",
+    "test:e2e": "playwright test",
+    "verify": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@iconify-json/lucide": "^1.2.123",
+    "@nuxt/ui": "^4.7.0",
+    "better-sqlite3": "^12.4.1",
+    "drizzle-orm": "^0.45.2",
+    "nuxt": "^4.5.2",
+    "vue": "^3.5.29",
+    "vue-router": "^5.2.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^4.0.0",
+    "@playwright/test": "^1.55.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "drizzle-kit": "^0.31.8",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.2",
+    "vue-tsc": "^3.3.9"
+  }
+}

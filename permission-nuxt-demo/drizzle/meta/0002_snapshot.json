@@ -1,0 +1,1917 @@
+{
+  "id": "dc9fb948-469e-4e03-a4ef-f21d88eacac4",
+  "prevId": "324e67f5-1d30-45d5-b2fa-f642b202f60e",
+  "version": "6",
+  "dialect": "sqlite",
+  "tables": {
+    "iam_audit_log": {
+      "name": "iam_audit_log",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "actor_user_id": {
+          "name": "actor_user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "action": {
+          "name": "action",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "entity_type": {
+          "name": "entity_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "entity_id": {
+          "name": "entity_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "summary": {
+          "name": "summary",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "detail_json": {
+          "name": "detail_json",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'{}'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_iam_audit_log_created": {
+          "name": "idx_iam_audit_log_created",
+          "columns": [
+            "created_at"
+          ],
+          "isUnique": false
+        },
+        "idx_iam_audit_log_entity": {
+          "name": "idx_iam_audit_log_entity",
+          "columns": [
+            "entity_type",
+            "entity_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_audit_log_actor_user_id_iam_user_id_fk": {
+          "name": "iam_audit_log_actor_user_id_iam_user_id_fk",
+          "tableFrom": "iam_audit_log",
+          "columnsFrom": [
+            "actor_user_id"
+          ],
+          "tableTo": "iam_user",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_data_domain": {
+      "name": "iam_data_domain",
+      "columns": {
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "demo_customer": {
+      "name": "demo_customer",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "owner_user_id": {
+          "name": "owner_user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "owner_org_unit_id": {
+          "name": "owner_org_unit_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_demo_customer_owner_user": {
+          "name": "idx_demo_customer_owner_user",
+          "columns": [
+            "owner_user_id"
+          ],
+          "isUnique": false
+        },
+        "idx_demo_customer_owner_org": {
+          "name": "idx_demo_customer_owner_org",
+          "columns": [
+            "owner_org_unit_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "demo_customer_owner_user_id_iam_user_id_fk": {
+          "name": "demo_customer_owner_user_id_iam_user_id_fk",
+          "tableFrom": "demo_customer",
+          "columnsFrom": [
+            "owner_user_id"
+          ],
+          "tableTo": "iam_user",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        },
+        "demo_customer_owner_org_unit_id_org_unit_id_fk": {
+          "name": "demo_customer_owner_org_unit_id_org_unit_id_fk",
+          "tableFrom": "demo_customer",
+          "columnsFrom": [
+            "owner_org_unit_id"
+          ],
+          "tableTo": "org_unit",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_function_business_resource": {
+      "name": "iam_function_business_resource",
+      "columns": {
+        "function_permission_id": {
+          "name": "function_permission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "resource_id": {
+          "name": "resource_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_iam_function_business_resource_resource": {
+          "name": "idx_iam_function_business_resource_resource",
+          "columns": [
+            "resource_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_function_business_resource_function_permission_id_iam_function_permission_id_fk": {
+          "name": "iam_function_business_resource_function_permission_id_iam_function_permission_id_fk",
+          "tableFrom": "iam_function_business_resource",
+          "columnsFrom": [
+            "function_permission_id"
+          ],
+          "tableTo": "iam_function",
+          "columnsTo": [
+            "permission_id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_function_business_resource_resource_id_iam_business_resource_id_fk": {
+          "name": "iam_function_business_resource_resource_id_iam_business_resource_id_fk",
+          "tableFrom": "iam_function_business_resource",
+          "columnsFrom": [
+            "resource_id"
+          ],
+          "tableTo": "iam_business_resource",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "iam_function_business_resource_function_permission_id_resource_id_pk": {
+          "columns": [
+            "function_permission_id",
+            "resource_id"
+          ],
+          "name": "iam_function_business_resource_function_permission_id_resource_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_function": {
+      "name": "iam_function",
+      "columns": {
+        "permission_id": {
+          "name": "permission_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "action_type": {
+          "name": "action_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "data_scoped": {
+          "name": "data_scoped",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "is_sensitive": {
+          "name": "is_sensitive",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "iam_function_permission_id_iam_permission_id_fk": {
+          "name": "iam_function_permission_id_iam_permission_id_fk",
+          "tableFrom": "iam_function",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "tableTo": "iam_permission",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_menu_binding": {
+      "name": "iam_menu_binding",
+      "columns": {
+        "menu_id": {
+          "name": "menu_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "permission_id": {
+          "name": "permission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bundle_level": {
+          "name": "bundle_level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'PUBLISHED'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_iam_menu_binding_permission": {
+          "name": "idx_iam_menu_binding_permission",
+          "columns": [
+            "permission_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_menu_binding_menu_id_iam_menu_id_fk": {
+          "name": "iam_menu_binding_menu_id_iam_menu_id_fk",
+          "tableFrom": "iam_menu_binding",
+          "columnsFrom": [
+            "menu_id"
+          ],
+          "tableTo": "iam_menu",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_menu_binding_permission_id_iam_permission_id_fk": {
+          "name": "iam_menu_binding_permission_id_iam_permission_id_fk",
+          "tableFrom": "iam_menu_binding",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "tableTo": "iam_permission",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "iam_menu_binding_menu_id_permission_id_pk": {
+          "columns": [
+            "menu_id",
+            "permission_id"
+          ],
+          "name": "iam_menu_binding_menu_id_permission_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_menu": {
+      "name": "iam_menu",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "node_type": {
+          "name": "node_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "permission_id": {
+          "name": "permission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "route_path": {
+          "name": "route_path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "component_key": {
+          "name": "component_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "icon": {
+          "name": "icon",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_iam_menu_code": {
+          "name": "uq_iam_menu_code",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
+        "uq_iam_menu_permission": {
+          "name": "uq_iam_menu_permission",
+          "columns": [
+            "permission_id"
+          ],
+          "isUnique": true
+        },
+        "idx_iam_menu_parent_sort": {
+          "name": "idx_iam_menu_parent_sort",
+          "columns": [
+            "parent_id",
+            "sort_order"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_menu_permission_id_iam_permission_id_fk": {
+          "name": "iam_menu_permission_id_iam_permission_id_fk",
+          "tableFrom": "iam_menu",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "tableTo": "iam_permission",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "set null"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "org_closure": {
+      "name": "org_closure",
+      "columns": {
+        "ancestor_id": {
+          "name": "ancestor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "descendant_id": {
+          "name": "descendant_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "depth": {
+          "name": "depth",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_org_closure_descendant": {
+          "name": "idx_org_closure_descendant",
+          "columns": [
+            "descendant_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "org_closure_ancestor_id_org_unit_id_fk": {
+          "name": "org_closure_ancestor_id_org_unit_id_fk",
+          "tableFrom": "org_closure",
+          "columnsFrom": [
+            "ancestor_id"
+          ],
+          "tableTo": "org_unit",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "org_closure_descendant_id_org_unit_id_fk": {
+          "name": "org_closure_descendant_id_org_unit_id_fk",
+          "tableFrom": "org_closure",
+          "columnsFrom": [
+            "descendant_id"
+          ],
+          "tableTo": "org_unit",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "org_closure_ancestor_id_descendant_id_pk": {
+          "columns": [
+            "ancestor_id",
+            "descendant_id"
+          ],
+          "name": "org_closure_ancestor_id_descendant_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "org_unit": {
+      "name": "org_unit",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "parent_id": {
+          "name": "parent_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "unit_type": {
+          "name": "unit_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "leader_user_id": {
+          "name": "leader_user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sort_order": {
+          "name": "sort_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_org_unit_code": {
+          "name": "uq_org_unit_code",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
+        "idx_org_unit_parent_sort": {
+          "name": "idx_org_unit_parent_sort",
+          "columns": [
+            "parent_id",
+            "sort_order"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "org_unit_leader_user_id_iam_user_id_fk": {
+          "name": "org_unit_leader_user_id_iam_user_id_fk",
+          "tableFrom": "org_unit",
+          "columnsFrom": [
+            "leader_user_id"
+          ],
+          "tableTo": "iam_user",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "set null"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_permission": {
+      "name": "iam_permission",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "domain": {
+          "name": "domain",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "data_domain_code": {
+          "name": "data_domain_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "risk_level": {
+          "name": "risk_level",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'LOW'"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'DRAFT'"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_iam_permission_code": {
+          "name": "uq_iam_permission_code",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
+        "idx_iam_permission_type_status": {
+          "name": "idx_iam_permission_type_status",
+          "columns": [
+            "type",
+            "status"
+          ],
+          "isUnique": false
+        },
+        "idx_iam_permission_domain": {
+          "name": "idx_iam_permission_domain",
+          "columns": [
+            "domain"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "policy_meta": {
+      "name": "policy_meta",
+      "columns": {
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_position_data_scope": {
+      "name": "iam_position_data_scope",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "position_id": {
+          "name": "position_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "data_domain_code": {
+          "name": "data_domain_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "scope_type": {
+          "name": "scope_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "include_descendants": {
+          "name": "include_descendants",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_position_data_scope_domain": {
+          "name": "uq_position_data_scope_domain",
+          "columns": [
+            "position_id",
+            "data_domain_code"
+          ],
+          "isUnique": true
+        },
+        "idx_position_data_scope_domain": {
+          "name": "idx_position_data_scope_domain",
+          "columns": [
+            "data_domain_code"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_position_data_scope_position_id_org_position_id_fk": {
+          "name": "iam_position_data_scope_position_id_org_position_id_fk",
+          "tableFrom": "iam_position_data_scope",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "tableTo": "org_position",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_position_data_scope_data_domain_code_iam_data_domain_code_fk": {
+          "name": "iam_position_data_scope_data_domain_code_iam_data_domain_code_fk",
+          "tableFrom": "iam_position_data_scope",
+          "columnsFrom": [
+            "data_domain_code"
+          ],
+          "tableTo": "iam_data_domain",
+          "columnsTo": [
+            "code"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "org_position": {
+      "name": "org_position",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "org_unit_id": {
+          "name": "org_unit_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "suggested_role_id": {
+          "name": "suggested_role_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_org_position_code": {
+          "name": "uq_org_position_code",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
+        "idx_org_position_unit": {
+          "name": "idx_org_position_unit",
+          "columns": [
+            "org_unit_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "org_position_org_unit_id_org_unit_id_fk": {
+          "name": "org_position_org_unit_id_org_unit_id_fk",
+          "tableFrom": "org_position",
+          "columnsFrom": [
+            "org_unit_id"
+          ],
+          "tableTo": "org_unit",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        },
+        "org_position_suggested_role_id_iam_role_id_fk": {
+          "name": "org_position_suggested_role_id_iam_role_id_fk",
+          "tableFrom": "org_position",
+          "columnsFrom": [
+            "suggested_role_id"
+          ],
+          "tableTo": "iam_role",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "set null"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_business_resource": {
+      "name": "iam_business_resource",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "domain": {
+          "name": "domain",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "resource_type": {
+          "name": "resource_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'DRAFT'"
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_iam_business_resource_code": {
+          "name": "uq_iam_business_resource_code",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
+        "idx_iam_business_resource_type_status": {
+          "name": "idx_iam_business_resource_type_status",
+          "columns": [
+            "resource_type",
+            "status"
+          ],
+          "isUnique": false
+        },
+        "idx_iam_business_resource_domain": {
+          "name": "idx_iam_business_resource_domain",
+          "columns": [
+            "domain"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_role_permission": {
+      "name": "iam_role_permission",
+      "columns": {
+        "role_id": {
+          "name": "role_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "permission_id": {
+          "name": "permission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_iam_role_permission_permission": {
+          "name": "idx_iam_role_permission_permission",
+          "columns": [
+            "permission_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_role_permission_role_id_iam_role_id_fk": {
+          "name": "iam_role_permission_role_id_iam_role_id_fk",
+          "tableFrom": "iam_role_permission",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "tableTo": "iam_role",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_role_permission_permission_id_iam_permission_id_fk": {
+          "name": "iam_role_permission_permission_id_iam_permission_id_fk",
+          "tableFrom": "iam_role_permission",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "tableTo": "iam_permission",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "iam_role_permission_role_id_permission_id_pk": {
+          "columns": [
+            "role_id",
+            "permission_id"
+          ],
+          "name": "iam_role_permission_role_id_permission_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_role": {
+      "name": "iam_role",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "code": {
+          "name": "code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "domain": {
+          "name": "domain",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "''"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ACTIVE'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_iam_role_code": {
+          "name": "uq_iam_role_code",
+          "columns": [
+            "code"
+          ],
+          "isUnique": true
+        },
+        "uq_iam_role_name": {
+          "name": "uq_iam_role_name",
+          "columns": [
+            "name"
+          ],
+          "isUnique": true
+        },
+        "idx_iam_role_status": {
+          "name": "idx_iam_role_status",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_scope_department": {
+      "name": "iam_scope_department",
+      "columns": {
+        "scope_id": {
+          "name": "scope_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "org_unit_id": {
+          "name": "org_unit_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "iam_scope_department_scope_id_iam_position_data_scope_id_fk": {
+          "name": "iam_scope_department_scope_id_iam_position_data_scope_id_fk",
+          "tableFrom": "iam_scope_department",
+          "columnsFrom": [
+            "scope_id"
+          ],
+          "tableTo": "iam_position_data_scope",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_scope_department_org_unit_id_org_unit_id_fk": {
+          "name": "iam_scope_department_org_unit_id_org_unit_id_fk",
+          "tableFrom": "iam_scope_department",
+          "columnsFrom": [
+            "org_unit_id"
+          ],
+          "tableTo": "org_unit",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "iam_scope_department_scope_id_org_unit_id_pk": {
+          "columns": [
+            "scope_id",
+            "org_unit_id"
+          ],
+          "name": "iam_scope_department_scope_id_org_unit_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_user_permission": {
+      "name": "iam_user_permission",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "permission_id": {
+          "name": "permission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valid_to": {
+          "name": "valid_to",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_ticket": {
+          "name": "source_ticket",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_iam_user_permission_window": {
+          "name": "uq_iam_user_permission_window",
+          "columns": [
+            "user_id",
+            "permission_id",
+            "valid_from"
+          ],
+          "isUnique": true
+        },
+        "idx_iam_user_permission_user_valid": {
+          "name": "idx_iam_user_permission_user_valid",
+          "columns": [
+            "user_id",
+            "valid_to"
+          ],
+          "isUnique": false
+        },
+        "idx_iam_user_permission_permission": {
+          "name": "idx_iam_user_permission_permission",
+          "columns": [
+            "permission_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_user_permission_user_id_iam_user_id_fk": {
+          "name": "iam_user_permission_user_id_iam_user_id_fk",
+          "tableFrom": "iam_user_permission",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "iam_user",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_user_permission_permission_id_iam_permission_id_fk": {
+          "name": "iam_user_permission_permission_id_iam_permission_id_fk",
+          "tableFrom": "iam_user_permission",
+          "columnsFrom": [
+            "permission_id"
+          ],
+          "tableTo": "iam_permission",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "org_user_position": {
+      "name": "org_user_position",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "position_id": {
+          "name": "position_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "org_unit_id": {
+          "name": "org_unit_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "is_primary": {
+          "name": "is_primary",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valid_to": {
+          "name": "valid_to",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_org_user_position_position": {
+          "name": "idx_org_user_position_position",
+          "columns": [
+            "position_id"
+          ],
+          "isUnique": false
+        },
+        "idx_org_user_position_unit": {
+          "name": "idx_org_user_position_unit",
+          "columns": [
+            "org_unit_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "org_user_position_user_id_iam_user_id_fk": {
+          "name": "org_user_position_user_id_iam_user_id_fk",
+          "tableFrom": "org_user_position",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "iam_user",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "org_user_position_position_id_org_position_id_fk": {
+          "name": "org_user_position_position_id_org_position_id_fk",
+          "tableFrom": "org_user_position",
+          "columnsFrom": [
+            "position_id"
+          ],
+          "tableTo": "org_position",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "org_user_position_org_unit_id_org_unit_id_fk": {
+          "name": "org_user_position_org_unit_id_org_unit_id_fk",
+          "tableFrom": "org_user_position",
+          "columnsFrom": [
+            "org_unit_id"
+          ],
+          "tableTo": "org_unit",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "restrict"
+        }
+      },
+      "compositePrimaryKeys": {
+        "org_user_position_user_id_position_id_org_unit_id_pk": {
+          "columns": [
+            "user_id",
+            "position_id",
+            "org_unit_id"
+          ],
+          "name": "org_user_position_user_id_position_id_org_unit_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_user_role": {
+      "name": "iam_user_role",
+      "columns": {
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "role_id": {
+          "name": "role_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "valid_from": {
+          "name": "valid_from",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "valid_to": {
+          "name": "valid_to",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_iam_user_role_role": {
+          "name": "idx_iam_user_role_role",
+          "columns": [
+            "role_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "iam_user_role_user_id_iam_user_id_fk": {
+          "name": "iam_user_role_user_id_iam_user_id_fk",
+          "tableFrom": "iam_user_role",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "tableTo": "iam_user",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        },
+        "iam_user_role_role_id_iam_role_id_fk": {
+          "name": "iam_user_role_role_id_iam_role_id_fk",
+          "tableFrom": "iam_user_role",
+          "columnsFrom": [
+            "role_id"
+          ],
+          "tableTo": "iam_role",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {
+        "iam_user_role_user_id_role_id_pk": {
+          "columns": [
+            "user_id",
+            "role_id"
+          ],
+          "name": "iam_user_role_user_id_role_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "iam_user": {
+      "name": "iam_user",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "username": {
+          "name": "username",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "employee_no": {
+          "name": "employee_no",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ACTIVE'"
+        },
+        "authz_version": {
+          "name": "authz_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "uq_iam_user_username": {
+          "name": "uq_iam_user_username",
+          "columns": [
+            "username"
+          ],
+          "isUnique": true
+        },
+        "uq_iam_user_employee_no": {
+          "name": "uq_iam_user_employee_no",
+          "columns": [
+            "employee_no"
+          ],
+          "isUnique": true
+        },
+        "idx_iam_user_status": {
+          "name": "idx_iam_user_status",
+          "columns": [
+            "status"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

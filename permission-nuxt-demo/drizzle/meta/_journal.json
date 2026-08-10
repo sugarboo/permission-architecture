@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1786338119575,
+      "tag": "0000_previous_adam_warlock",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1786338314763,
+      "tag": "0001_wandering_thunderbolts",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1786361687458,
+      "tag": "0002_simplify_resources",
+      "breakpoints": true
+    }
+  ]
+}
