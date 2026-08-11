@@ -7,6 +7,10 @@ export type PermissionTreeNode = {
   caption?: string
   permissionId?: string
   riskLevel?: RiskLevel
+  disabled?: boolean
+  grantState?: 'CORE' | 'OPTIONAL'
+  grantLabel?: string
+  grantHint?: string
   children?: PermissionTreeNode[]
 }
 

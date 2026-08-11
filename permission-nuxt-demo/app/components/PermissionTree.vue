@@ -36,6 +36,11 @@ function leafIds(node: PermissionTreeNode): string[] {
   return [...own, ...(node.children || []).flatMap(leafIds)]
 }
 
+function editableLeafIds(node: PermissionTreeNode): string[] {
+  const own = node.permissionId && !node.disabled ? [node.permissionId] : []
+  return [...own, ...(node.children || []).flatMap(editableLeafIds)]
+}
+
 function stateOf(node: PermissionTreeNode) {
   const ids = leafIds(node)
   const selectedCount = ids.filter(id => props.modelValue.includes(id)).length
@@ -43,9 +48,10 @@ function stateOf(node: PermissionTreeNode) {
 }
 
 function toggle(node: PermissionTreeNode, checked: boolean) {
-  const state = stateOf(node)
+  const ids = editableLeafIds(node)
+  if (!ids.length) return
   const next = new Set(props.modelValue)
-  state.ids.forEach(id => checked ? next.add(id) : next.delete(id))
+  ids.forEach(id => checked ? next.add(id) : next.delete(id))
   emit('update:modelValue', [...next])
 }
 

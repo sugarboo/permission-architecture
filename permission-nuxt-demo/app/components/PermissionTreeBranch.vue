@@ -21,7 +21,7 @@ const hasChildren = computed(() => Boolean(props.node.children?.length))
 
 <template>
   <div class="tree-node" role="treeitem" :aria-expanded="hasChildren ? expanded.has(node.id) : undefined">
-    <div class="tree-row" :class="{ 'is-group': hasChildren, 'is-leaf': !hasChildren }" :style="{ '--tree-depth': depth }">
+    <div class="tree-row" :class="{ 'is-group': hasChildren, 'is-leaf': !hasChildren, 'is-derived-core': node.grantState === 'CORE', 'is-menu-optional': node.grantState === 'OPTIONAL' }" :style="{ '--tree-depth': depth }" :title="node.grantHint">
       <span class="tree-indent" />
       <button v-if="hasChildren" type="button" class="tree-toggle" :aria-label="expanded.has(node.id) ? '收起' : '展开'" @click="emit('toggle-expanded', node.id)">
         <UIcon :name="expanded.has(node.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" size="13" />
@@ -30,6 +30,7 @@ const hasChildren = computed(() => Boolean(props.node.children?.length))
       <UCheckbox
         :model-value="state.checked"
         :indeterminate="state.indeterminate"
+        :disabled="node.disabled"
         :aria-label="`选择 ${node.label}`"
         @update:model-value="emit('toggle', node, $event === true)"
       />
@@ -37,7 +38,10 @@ const hasChildren = computed(() => Boolean(props.node.children?.length))
         <b>{{ node.label }}</b>
         <small v-if="node.caption">{{ node.caption }}</small>
       </div>
-      <UBadge v-if="node.riskLevel" :color="riskColor(node.riskLevel) as any" variant="subtle" size="sm" :label="node.riskLevel" />
+      <div v-if="node.grantState || node.riskLevel" class="tree-badges">
+        <UBadge v-if="node.grantState" :color="node.grantState === 'CORE' ? 'primary' : 'warning'" variant="subtle" size="sm" :label="node.grantLabel || node.grantState" :title="node.grantHint" />
+        <UBadge v-if="node.riskLevel" :color="riskColor(node.riskLevel) as any" variant="subtle" size="sm" :label="node.riskLevel" />
+      </div>
       <span v-else-if="hasChildren" class="tree-count">{{ state.ids.length }}</span>
     </div>
     <div v-if="hasChildren && expanded.has(node.id)" class="tree-children" :style="{ '--tree-parent-depth': depth }" role="group">

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { PermissionTreeNode } from '~/types/permission'
+import { resolveMenuPackageReflection } from '~/utils/menu-package-reflection'
 
 const open = defineModel<boolean>('open', { default: false })
 const props = defineProps<{
@@ -28,16 +29,81 @@ const validToLocal = ref('')
 const catalogRef = computed(() => catalog.value)
 const { menuTree, functionTree } = usePermissionCatalog(catalogRef)
 
+const menuPackageReflection = computed(() => resolveMenuPackageReflection(
+  catalog.value?.menus || [],
+  catalog.value?.menuBindings || [],
+  selectedPermissionIds.value
+))
+const selectedMenuCount = computed(() => menuPackageReflection.value.selectedMenuIds.length)
+const menuCoreFunctionIds = computed(() => [...menuPackageReflection.value.coreSources.keys()])
+const menuOptionalFunctionIds = computed(() => [...menuPackageReflection.value.optionalSources.keys()])
+const optionalPendingFunctions = computed(() => {
+  const selected = new Set(selectedPermissionIds.value)
+  const optional = new Set(menuOptionalFunctionIds.value.filter(id => !selected.has(id)))
+  return (catalog.value?.functions || []).filter((item: any) => optional.has(item.id))
+})
+const selectedMenuNamesLabel = computed(() => {
+  const names = menuPackageReflection.value.selectedMenuNames
+  return names.length <= 3 ? names.join('、') : `${names.slice(0, 3).join('、')} 等 ${names.length} 个菜单`
+})
+
+const functionSelection = computed<string[]>({
+  get() {
+    return [...new Set([...selectedPermissionIds.value, ...menuCoreFunctionIds.value])]
+  },
+  set(nextIds) {
+    const functionIds = new Set((catalog.value?.functions || []).map((item: any) => item.id))
+    const coreIds = new Set(menuCoreFunctionIds.value)
+    const existingExplicit = new Set(selectedPermissionIds.value)
+    const nextExplicit = new Set(selectedPermissionIds.value.filter(id => !functionIds.has(id)))
+
+    for (const id of nextIds) {
+      if (!functionIds.has(id)) continue
+      // A derived-only CORE checkbox is display state, not a persisted direct
+      // grant. Existing explicit duplicates remain removable by the operator.
+      if (!coreIds.has(id) || existingExplicit.has(id)) nextExplicit.add(id)
+    }
+    selectedPermissionIds.value = [...nextExplicit]
+  }
+})
+
+function decorateFunctionNodes(nodes: PermissionTreeNode[]): PermissionTreeNode[] {
+  return nodes.map((node) => {
+    if (node.children?.length) return { ...node, children: decorateFunctionNodes(node.children) }
+    if (!node.permissionId) return node
+
+    const coreSources = menuPackageReflection.value.coreSources.get(node.permissionId)
+    if (coreSources?.length) {
+      const alsoExplicit = selectedPermissionIds.value.includes(node.permissionId)
+      return {
+        ...node,
+        disabled: !alsoExplicit,
+        grantState: 'CORE',
+        grantLabel: alsoExplicit ? 'CORE 自动 + 直接' : 'CORE 自动带出',
+        grantHint: `由菜单自动带出：${coreSources.join('、')}${alsoExplicit ? '；同时存在一条直接授权' : ''}`
+      }
+    }
+
+    const optionalSources = menuPackageReflection.value.optionalSources.get(node.permissionId)
+    if (optionalSources?.length) {
+      const explicitlySelected = selectedPermissionIds.value.includes(node.permissionId)
+      return {
+        ...node,
+        grantState: 'OPTIONAL',
+        grantLabel: explicitlySelected ? 'OPTIONAL 已选' : 'OPTIONAL 待选',
+        grantHint: `菜单可选功能：${optionalSources.join('、')}；${explicitlySelected ? '已单独授权' : '不会随菜单自动授予'}`
+      }
+    }
+    return node
+  })
+}
+
+const reflectedFunctionTree = computed(() => decorateFunctionNodes(functionTree.value))
+
 const addedCount = computed(() => selectedPermissionIds.value.filter(id => !initialPermissionIds.value.includes(id)).length + selectedRoleIds.value.filter(id => !initialRoleIds.value.includes(id)).length)
 const removedCount = computed(() => initialPermissionIds.value.filter(id => !selectedPermissionIds.value.includes(id)).length + initialRoleIds.value.filter(id => !selectedRoleIds.value.includes(id)).length)
 const highRiskSelected = computed(() => {
   return (catalog.value?.functions || []).filter((item: any) => item.riskLevel === 'HIGH' && selectedPermissionIds.value.includes(item.id))
-})
-
-const currentTree = computed<PermissionTreeNode[]>(() => {
-  if (activeTab.value === 'menu') return menuTree.value
-  if (activeTab.value === 'function') return functionTree.value
-  return []
 })
 
 const effective = computed(() => subject.value?.effective)
@@ -130,7 +196,10 @@ async function save() {
           <div class="tab-strip" style="margin-bottom: 14px; overflow-x: auto">
             <button class="tab-button" :class="{ active: activeTab === 'menu' }" @click="activeTab = 'menu'">菜单</button>
             <button class="tab-button" :class="{ active: activeTab === 'function' }"
-              @click="activeTab = 'function'">功能</button>
+              @click="activeTab = 'function'">功能
+              <span v-if="menuCoreFunctionIds.length" class="tab-notice core">{{ menuCoreFunctionIds.length }} CORE</span>
+              <span v-if="optionalPendingFunctions.length" class="tab-notice optional">{{ optionalPendingFunctions.length }} 待选</span>
+            </button>
             <button v-if="subjectType === 'user'" class="tab-button" :class="{ active: activeTab === 'scope' }"
               @click="activeTab = 'scope'">数据范围</button>
             <button v-if="subjectType === 'user'" class="tab-button" :class="{ active: activeTab === 'effective' }"
@@ -145,7 +214,30 @@ async function save() {
               <UBadge v-if="activeTab === 'menu'" color="primary" variant="subtle" label="父节点仅展开当前叶子" />
               <UBadge v-else color="primary" variant="subtle" label="前后端统一功能码" />
             </div>
-            <PermissionTree v-model="selectedPermissionIds" :nodes="currentTree" :search="search" />
+
+            <div v-if="activeTab === 'function' && selectedMenuCount" class="menu-package-feedback">
+              <div class="inline-alert">
+                <UIcon name="i-lucide-package-check" size="17" />
+                <span><b>{{ menuCoreFunctionIds.length }} 项 CORE 已自动反显</b><br>来自 {{ selectedMenuNamesLabel }}。蓝色锁定勾选仅表示“随菜单生效”，不会重复保存为直接授权。</span>
+              </div>
+              <div v-if="optionalPendingFunctions.length" class="inline-alert warning optional-callout">
+                <UIcon name="i-lucide-circle-alert" size="17" />
+                <span><b>还有 {{ optionalPendingFunctions.length }} 项 OPTIONAL 未授予</b><br>{{ optionalPendingFunctions.map((item: any) => item.name).join('、') }}。请在下方橙色标记项中按需勾选。</span>
+              </div>
+              <div v-else-if="menuOptionalFunctionIds.length" class="inline-alert optional-complete">
+                <UIcon name="i-lucide-circle-check" size="17" />
+                <span>{{ menuOptionalFunctionIds.length }} 项 OPTIONAL 均已按需单独选中。</span>
+              </div>
+            </div>
+
+            <PermissionTree v-if="activeTab === 'menu'" v-model="selectedPermissionIds" :nodes="menuTree" :search="search" />
+            <PermissionTree v-else v-model="functionSelection" :nodes="reflectedFunctionTree" :search="search" />
+
+            <div v-if="activeTab === 'menu' && selectedMenuCount" class="inline-alert menu-package-summary">
+              <UIcon name="i-lucide-package-open" size="17" />
+              <span><b>已选 {{ selectedMenuCount }} 个页面菜单</b><br>将自动带出 {{ menuCoreFunctionIds.length }} 项 CORE<span v-if="menuOptionalFunctionIds.length">；另有 {{ optionalPendingFunctions.length }} / {{ menuOptionalFunctionIds.length }} 项 OPTIONAL 待确认</span>。</span>
+              <UButton color="primary" variant="soft" size="sm" label="查看功能反显" @click="activeTab = 'function'" />
+            </div>
 
             <div v-if="subjectType === 'user' && activeTab === 'menu'" class="panel"
               style="margin-top: 14px; box-shadow: none">
