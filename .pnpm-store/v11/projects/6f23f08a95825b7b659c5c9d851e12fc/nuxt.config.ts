@@ -10,20 +10,29 @@ export default defineNuxtConfig({
     // (modal / slideover) from inheriting a persisted dark preference.
     colorMode: false,
   },
+  // The GitHub Pages build has no icon API endpoint. Bundle every referenced
+  // Lucide icon into the client and forbid runtime network fallback.
+  icon: {
+    provider: 'none',
+    clientBundle: {
+      scan: true,
+      sizeLimitKb: 128
+    }
+  },
   css: ['~/assets/css/main.css'],
   app: {
     head: {
       htmlAttrs: { lang: 'zh-CN', class: 'light' },
       title: '权限中心 · 企业中台',
       meta: [
-        { name: 'description', content: 'RBAC 角色模板、用户直接加授、菜单权限包与组织岗位数据范围的纯前端静态演示。' }
+        { name: 'description', content: 'RBAC 角色模板、用户直接加授、菜单权限包与组织岗位任职的纯前端静态演示。' }
       ]
     }
   },
   nitro: {
     preset: 'static',
     prerender: {
-      routes: ['/', '/users', '/roles', '/catalog', '/menus', '/organization', '/simulator', '/audit', '/docs']
+      routes: ['/', '/users', '/roles', '/catalog', '/menus', '/organization', '/audit', '/docs']
     }
   },
   typescript: {

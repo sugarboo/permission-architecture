@@ -6,17 +6,18 @@ const sections = [
   { id: 'model', label: '核心对象' },
   { id: 'flow', label: '授权计算' },
   { id: 'assignment', label: '组织任职' },
-  { id: 'data', label: '数据权限' },
-  { id: 'backend', label: '前后端执行' },
-  { id: 'fields', label: '关键字段' },
-  { id: 'boundary', label: '本期边界' }
+  { id: 'codes', label: '编码规范' },
+  { id: 'backend', label: '生产实施' },
+  { id: 'data', label: '数据权限建议' },
+  { id: 'boundary', label: 'Demo 边界' }
 ]
 </script>
 
 <template>
   <div>
-    <PageHeader title="实现随方案一起交付" description="本页内嵌评审后的统一口径：功能改名为资源，删除旧业务资源层，组织岗位独立维护用户任职。">
-      <UButton to="/simulator" color="primary" icon="i-lucide-flask-conical" label="打开模拟器" />
+    <PageHeader title="实现随方案一起交付" description="本页说明当前 Demo 的真实能力，并将尚未演示的数据权限单独列为后端实施建议。">
+      <UButton to="/users" color="primary" icon="i-lucide-user-round-plus" label="体验用户授权" />
+      <UButton to="/organization" color="neutral" variant="outline" icon="i-lucide-network" label="维护组织任职" />
     </PageHeader>
 
     <div class="docs-layout">
@@ -29,74 +30,74 @@ const sections = [
 
       <article class="panel docs-content">
         <h2 id="summary">架构总览</h2>
-        <p>系统采用 <b>RBAC 角色模板 + 用户直接加授 + 菜单资源包 + 组织/岗位数据范围</b>。运营侧只有“菜单”和“资源”两类可授权对象；资源就是原“功能”，代表一个原子业务动作，例如“创建采购单” / <code>sc.purchase_order.create</code>。</p>
-        <pre>有效资源(u) = 角色资源(u) ∪ 用户直授资源(u) ∪ 菜单 CORE 资源(u)
-允许(u, 资源码, 数据对象)
-  = 已认证
-  AND 资源码 ∈ 有效资源(u)
-  AND 数据对象 ∈ 岗位在对应数据域的正式范围</pre>
+        <p>系统采用 <b>角色模板 + 用户直接加授 + 菜单资源包</b> 的混合授权模型。运营人员只需理解“菜单”和“资源”；资源代表一个原子业务动作，例如“创建采购单” / <code>sc.purchase_order.create</code>，前后端直接复用同一个稳定资源码。</p>
+        <pre>有效资源(u)
+  = 角色模板资源(u)
+  ∪ 用户直接加授资源(u)
+  ∪ 已授权菜单的 CORE 资源(u)
+
+允许(u, resourceCode)
+  = 用户有效 AND resourceCode ∈ 有效资源(u)</pre>
 
         <h2 id="model">核心对象</h2>
         <table>
-          <thead><tr><th>对象</th><th>职责</th><th>是否直接授权</th></tr></thead>
+          <thead><tr><th>对象</th><th>职责</th><th>关键约束</th></tr></thead>
           <tbody>
-            <tr><td>用户</td><td>登录主体；基础账号与组织任职分开维护</td><td>授权主体</td></tr>
-            <tr><td>角色</td><td>复用常规菜单和资源的模板</td><td>授给用户</td></tr>
-            <tr><td>资源</td><td>唯一能力合同，如 <code>sc.purchase_order.create</code></td><td>是</td></tr>
-            <tr><td>菜单</td><td>板块 → 目录 → 页面菜单；页面叶子携带资源包</td><td>仅页面菜单</td></tr>
-            <tr><td>组织 / 岗位</td><td>维护用户正式任职，并提供按数据域的数据范围</td><td>否</td></tr>
+            <tr><td>用户</td><td>登录主体；账号与组织任职分开维护</td><td>角色可多选；直授仅 ALLOW</td></tr>
+            <tr><td>角色模板</td><td>复用常规菜单和资源</td><td>不绑定板块，不做角色继承</td></tr>
+            <tr><td>资源</td><td>唯一能力合同，如 <code>sc.purchase_order.create</code></td><td>API 不另建授权对象</td></tr>
+            <tr><td>菜单</td><td>板块 → 目录 → 页面菜单</td><td>仅页面菜单可授权并绑定资源包</td></tr>
+            <tr><td>组织 / 岗位</td><td>在独立页面维护用户主任职</td><td>工号在任职时选填</td></tr>
           </tbody>
         </table>
-        <p><b>已删除旧资源层：</b>不再登记 REPORT / TEMPLATE 业务资源，也不维护资源到功能的映射。API、任务和服务方法只是执行点，直接校验资源码。</p>
 
         <h2 id="flow">授权计算</h2>
+        <h3>角色优先，直授补充</h3>
+        <p>用户授权抽屉首先展示可多选的角色模板，再配置菜单和少量直接资源。已有角色不会因为新增选择而互斥；保存时对各来源分别记录，便于解释和审计。</p>
         <h3>菜单资源包</h3>
-        <p>CORE 是进入页面所需的最小资源集合，随页面菜单自动展开；OPTIONAL 包含新建、编辑、导出、删除、审批等资源，由管理员单独选择。高风险资源不能成为 CORE。</p>
-        <h3>父节点语义</h3>
-        <p>板块或目录勾选只保存当前页面菜单叶子集合。未来新增子菜单不会静默进入历史授权。</p>
-        <h3>来源去重</h3>
-        <p>同一资源可同时来自角色、用户直授和菜单 CORE。撤销某一来源时，如果仍有其他来源，资源继续有效。</p>
+        <p><b>CORE</b> 是页面运行所需的安全最小资源集合，授予菜单时自动生效并在资源页反显；<b>OPTIONAL</b> 只给出醒目提示，必须显式勾选。高风险资源不能成为 CORE。</p>
+        <p>板块或目录勾选只保存当前页面菜单叶子快照，未来新增子菜单不会静默进入历史授权。CORE 为实时资源包：管理员发布包变更后，所有已持有该菜单的主体随之生效。</p>
 
         <h2 id="assignment">组织任职</h2>
         <ol>
-          <li>用户页只创建姓名、账号、工号和状态，不选择组织、岗位或初始角色。</li>
-          <li>组织管理员进入“组织与岗位”，选择组织和岗位，再通过用户下拉框指定任职。</li>
-          <li>调岗时在同一入口重新选择组织与岗位，系统覆盖主任职、提升策略版本并写入审计。</li>
-          <li>用户授权抽屉不展示或修改数据范围；本期不提供用户临时数据范围。</li>
+          <li>用户页仅创建姓名、登录账号和状态，不选择组织、岗位、角色或工号。</li>
+          <li>组织管理员进入“组织与岗位”，选择用户、组织与岗位，并可选填工号。</li>
+          <li>调岗时从同一入口更新主任职；岗位必须属于所选组织。</li>
+          <li>组织任职与资源授权分开维护，避免账号创建流程承载过多职责。</li>
         </ol>
 
-        <h2 id="data">数据权限</h2>
-        <p>正式数据范围按“岗位 × 数据域”配置，而不是挂在用户或业务角色上。第一版范围固定为 NONE、SELF、DEPT、DEPT_AND_DESCENDANTS、CUSTOM_DEPTS、ALL。未配置按 NONE。</p>
-        <pre>资源 sc.purchase_order.approve 已授权
-AND 采购主管 @ 供应链部
-    sc.purchase_order → DEPT_AND_DESCENDANTS
-= 可审批本部门及下级的采购单</pre>
-
-        <h2 id="backend">前后端执行</h2>
-        <p>前端路由、按钮与后端控制器 / 服务方法使用同一个资源码。前端隐藏只改善体验；后端逐请求强制校验，并在列表、详情、更新、删除、导出和批量操作上复用同一数据谓词。</p>
-        <pre>// 前端：体验控制
-const canCreate = hasResource('sc.purchase_order.create')
-
-// 后端：安全边界
-requireResource(event, 'sc.purchase_order.create')
-const scope = resolveDataAccess(userId, 'sc.purchase_order')</pre>
-        <p>新增 API 无需创建 API 资源或额外映射功能；执行点必须直接声明一个已启用资源码。未声明、资源不存在或已停用均默认拒绝。</p>
-
-        <h2 id="fields">关键字段</h2>
+        <h2 id="codes">编码规范</h2>
         <table>
-          <thead><tr><th>对象</th><th>本期保留字段</th></tr></thead>
+          <thead><tr><th>对象</th><th>规范</th><th>示例</th></tr></thead>
           <tbody>
-            <tr><td>用户</td><td>姓名、登录账号、工号、状态</td></tr>
-            <tr><td>角色</td><td>名称、编码、业务板块、状态</td></tr>
-            <tr><td>资源</td><td>名称、稳定资源码、业务板块、风险等级、数据域、状态</td></tr>
-            <tr><td>菜单</td><td>类型、名称、编码、上级、菜单权限码、前端路由</td></tr>
-            <tr><td>组织</td><td>名称、上级、类型、负责人</td></tr>
-            <tr><td>岗位</td><td>名称、所属组织、按数据域的正式范围</td></tr>
+            <tr><td>板块</td><td><code>BOARD_</code> + 大写业务名</td><td><code>BOARD_SUPPLY_CHAIN</code></td></tr>
+            <tr><td>目录</td><td><code>DIR_</code> + 层级语义</td><td><code>DIR_SC_PURCHASE</code></td></tr>
+            <tr><td>页面菜单</td><td><code>MENU_</code> + 页面语义</td><td><code>MENU_SC_PURCHASE_LIST</code></td></tr>
+            <tr><td>角色模板</td><td><code>ROLE_</code> + 职责语义</td><td><code>ROLE_PURCHASE_SPECIALIST</code></td></tr>
+            <tr><td>业务资源</td><td><code>域.对象.动作</code></td><td><code>sc.purchase_order.create</code></td></tr>
           </tbody>
         </table>
+        <p>新建表单会预填规范前缀；编码创建后保持稳定，名称可以调整。</p>
 
-        <h2 id="boundary">本期边界</h2>
-        <p>明确不引入多租户、tenant_id、角色层级、用户级 DENY、用户临时数据范围、API 资源层、报表 / 模板资源目录、对象实例 ACL、任意 SQL / 表达式型 ABAC、字段级授权或独立策略引擎。静态 Demo 的浏览器 Mock 身份仅用于演示，生产环境应接入企业 SSO / Session。</p>
+        <h2 id="backend">生产实施</h2>
+        <p>前端路由、按钮与后端控制器 / 服务方法使用同一个资源码。前端隐藏只改善体验；后端必须逐请求校验，不能把菜单可见、按钮隐藏或客户端传入的用户 ID 当作安全边界。</p>
+        <pre>// 前端：只做体验控制
+const canCreate = can('sc.purchase_order.create')
+
+// 后端：可信执行点
+@PreAuthorize("hasAuthority('sc.purchase_order.create')")
+public PurchaseOrder create(CreateCommand command) { ... }</pre>
+        <p>服务端应默认拒绝、校验禁用状态和直授有效期、记录 before / after 审计，并通过策略版本使缓存及时失效。</p>
+
+        <h2 id="data">数据权限建议（Demo 未实现）</h2>
+        <p>正式系统如需要行级隔离，建议采用“岗位 × 数据域”的有限策略：NONE、SELF、DEPT、DEPT_AND_DESCENDANTS、CUSTOM_DEPTS、ALL。策略只由服务端解析，未配置按 NONE；列表、详情、更新、删除、导出和异步任务必须复用同一数据谓词。</p>
+        <pre>允许(u, resourceCode, row)
+  = resourceCode ∈ 有效资源(u)
+  AND row ∈ 岗位在该数据域的有效范围</pre>
+        <p>本轮 Demo 已移除数据域、客户数据行、范围表单和模拟器，避免尚未接入真实业务归属字段时产生误导。完整数据库与查询建议请查阅项目根目录的开发实施文档。</p>
+
+        <h2 id="boundary">Demo 边界</h2>
+        <p>当前页面是纯前端静态演示：数据保存在本机浏览器，身份、审计与接口调用均为 Mock。它用于确认对象模型、授权流程和交互，不可直接充当生产鉴权服务。</p>
       </article>
     </div>
   </div>

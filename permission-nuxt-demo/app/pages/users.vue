@@ -9,14 +9,15 @@ const createOpen = ref(false)
 const saving = ref(false)
 const authOpen = ref(false)
 const authTarget = reactive({ id: '', name: '' })
-const form = reactive({ displayName: '', username: '', employeeNo: '', status: 'ACTIVE' as 'ACTIVE' | 'DISABLED' })
+const form = reactive({ displayName: '', username: '', status: 'ACTIVE' as 'ACTIVE' | 'DISABLED' })
 
-const filtered = computed(() => (users.value || []).filter(user => `${user.displayName} ${user.username} ${user.employeeNo} ${user.orgUnitName || ''}`.toLowerCase().includes(search.value.toLowerCase())))
+const filtered = computed(() => (users.value || []).filter(user => `${user.displayName} ${user.username} ${user.employeeNo || ''} ${user.orgUnitName || ''}`.toLowerCase().includes(search.value.toLowerCase())))
 
 function initials(name: string) { return name.slice(-2) }
 function statusColor(status: string) { return status === 'ACTIVE' ? 'success' : 'neutral' }
 function openAuth(user: any) { authTarget.id = user.id; authTarget.name = user.displayName; authOpen.value = true }
-function resetForm() { Object.assign(form, { displayName: '', username: '', employeeNo: '', status: 'ACTIVE' }) }
+function resetForm() { Object.assign(form, { displayName: '', username: '', status: 'ACTIVE' }) }
+function openCreateUser() { resetForm(); createOpen.value = true }
 
 async function createUser() {
   saving.value = true
@@ -32,15 +33,15 @@ async function createUser() {
 
 <template>
   <div>
-    <PageHeader title="用户与例外授权" description="用户页只维护账号和能力授权；组织、岗位与正式数据范围统一在“组织与岗位”页面维护。">
-      <UButton color="primary" icon="i-lucide-user-round-plus" label="新建用户" @click="createOpen = true" />
+    <PageHeader title="用户与例外授权" description="用户页只维护基础账号和能力授权；组织、岗位与工号统一在“组织与岗位”页面维护。">
+      <UButton color="primary" icon="i-lucide-user-round-plus" label="新建用户" @click="openCreateUser" />
     </PageHeader>
 
     <section class="panel">
       <div class="panel-head">
         <div>
           <h2>用户列表</h2>
-          <p>{{ users?.length || 0 }} 位用户，授权变化实时提升 authzVersion。</p>
+          <p>{{ users?.length || 0 }} 位用户，授权变化会同步有效权限与审计记录。</p>
         </div>
         <UBadge color="primary" variant="subtle" label="单一企业" />
       </div>
@@ -57,7 +58,6 @@ async function createUser() {
                 <th>组织 / 岗位</th>
                 <th>角色模板</th>
                 <th>直授</th>
-                <th>策略版本</th>
                 <th>状态</th>
                 <th>操作</th>
               </tr>
@@ -67,7 +67,7 @@ async function createUser() {
                 <td>
                   <div class="primary-cell">
                     <div class="row-avatar">{{ initials(user.displayName) }}</div>
-                    <div><b>{{ user.displayName }}</b><small>{{ user.employeeNo }} · {{ user.username }}</small></div>
+                    <div><b>{{ user.displayName }}</b><small>{{ user.employeeNo ? `${user.employeeNo} · ` : '' }}{{ user.username }}</small></div>
                   </div>
                 </td>
                 <td><b style="font-size: 11px">{{ user.orgUnitName || '未分配' }}</b>
@@ -83,7 +83,6 @@ async function createUser() {
                   <UBadge :color="user.directGrantCount ? 'warning' : 'neutral'" variant="subtle"
                     :label="`${user.directGrantCount} 项`" />
                 </td>
-                <td><span class="code">v{{ user.authzVersion }}</span></td>
                 <td>
                   <UBadge :color="statusColor(user.status)" variant="subtle"
                     :label="user.status === 'ACTIVE' ? '启用' : '停用'" />
@@ -111,16 +110,13 @@ async function createUser() {
           <UFormField label="登录账号" required>
             <UInput v-model="form.username" placeholder="li.chen" />
           </UFormField>
-          <UFormField label="工号" required>
-            <UInput v-model="form.employeeNo" placeholder="EMP0401" />
-          </UFormField>
           <UFormField label="状态" required>
             <USelect v-model="form.status"
               :items="[{ label: '启用', value: 'ACTIVE' }, { label: '停用', value: 'DISABLED' }]" value-key="value" />
           </UFormField>
         </div>
         <div class="inline-alert" style="margin-top: 14px">
-          <UIcon name="i-lucide-info" size="16" /><span>保存后用户处于“未分配组织 / 无岗位”状态。请到组织与岗位页通过用户下拉框设置组织与岗位；角色和资源仍从本页“授权”入口配置。</span>
+          <UIcon name="i-lucide-info" size="16" /><span>保存后用户处于“未分配组织 / 无岗位”状态。请到组织与岗位页设置任职，并可在设置任职时补充工号；角色和资源仍从本页“授权”入口配置。</span>
         </div>
       </template>
       <template #footer>

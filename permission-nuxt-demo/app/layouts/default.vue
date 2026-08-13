@@ -16,7 +16,6 @@ const navigation = [
   { to: '/catalog', label: '资源管理', icon: 'i-lucide-boxes' },
   { to: '/menus', label: '菜单权限包', icon: 'i-lucide-panel-left' },
   { to: '/organization', label: '组织与岗位', icon: 'i-lucide-network' },
-  { to: '/simulator', label: '权限模拟器', icon: 'i-lucide-flask-conical' },
   { to: '/audit', label: '授权审计', icon: 'i-lucide-scroll-text' },
   { to: '/docs', label: '方案文档', icon: 'i-lucide-book-open-text' }
 ]
@@ -50,7 +49,7 @@ const currentLabel = computed(() => navigation.find(item => item.to === route.pa
           <UBadge color="primary" variant="subtle" label="单企业模式" />
           <UBadge color="success" variant="subtle" label="纯静态 Mock" />
         </div>
-        <p>角色模板 + 用户加授 + 菜单资源包 + 组织岗位数据范围。不包含多租户、用户级 DENY 或临时数据范围。</p>
+        <p>角色模板 + 用户加授 + 菜单资源包 + 组织岗位任职。保持 ALLOW-only，权限来源清晰可解释。</p>
       </div>
     </aside>
 

@@ -12,10 +12,12 @@ export default defineConfig({
     ...devices['Desktop Chrome'],
     channel: process.env.PLAYWRIGHT_CHANNEL || 'chrome'
   },
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://127.0.0.1:3000/',
-    reuseExistingServer: true,
-    timeout: 120_000
-  }
+  webServer: process.env.TEST_BASE_URL
+    ? undefined
+    : {
+        command: 'node node_modules/nuxt/bin/nuxt.mjs dev --host 127.0.0.1 --port 3000',
+        url: 'http://127.0.0.1:3000/',
+        reuseExistingServer: true,
+        timeout: 120_000
+      }
 })

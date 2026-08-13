@@ -10,23 +10,11 @@ export type PermissionCandidate = {
   name: string
   type: 'RESOURCE' | 'MENU'
   domain: string
-  dataDomainCode: string | null
   riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'
 } & PermissionSource
 
 export type EffectivePermission = Omit<PermissionCandidate, keyof PermissionSource> & {
   sources: PermissionSource[]
-}
-
-export type DataAccessRule = {
-  all: boolean
-  self: boolean
-  orgUnitIds: string[]
-}
-
-export type OwnedDataRow = {
-  ownerUserId: string
-  ownerOrgUnitId: string
 }
 
 export function mergePermissionCandidates(rows: PermissionCandidate[]): EffectivePermission[] {
@@ -53,17 +41,10 @@ export function mergePermissionCandidates(rows: PermissionCandidate[]): Effectiv
       name: row.name,
       type: row.type,
       domain: row.domain,
-      dataDomainCode: row.dataDomainCode,
       riskLevel: row.riskLevel,
       sources: [source]
     })
   }
 
   return [...permissionMap.values()]
-}
-
-export function canAccessOwnedRow(access: DataAccessRule, row: OwnedDataRow, userId: string) {
-  return access.all
-    || (access.self && row.ownerUserId === userId)
-    || access.orgUnitIds.includes(row.ownerOrgUnitId)
 }

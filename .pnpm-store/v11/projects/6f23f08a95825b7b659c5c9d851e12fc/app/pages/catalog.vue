@@ -14,6 +14,12 @@ const changeReason = ref('')
 const saving = ref(false)
 
 const domains = ['信息板块', '供应链板块', '设计师板块', '权限中心']
+const resourceCodePrefixes: Record<string, string> = {
+  '信息板块': 'crm.',
+  '供应链板块': 'sc.',
+  '设计师板块': 'designer.',
+  '权限中心': 'iam.'
+}
 const riskItems = [
   { label: '低风险', value: 'LOW' },
   { label: '中风险', value: 'MEDIUM' },
@@ -24,9 +30,8 @@ const editStatusItems = [...createStatusItems, { label: '停用', value: 'DISABL
 
 const form = reactive({
   name: '',
-  code: '',
+  code: 'crm.',
   domain: '信息板块',
-  dataDomainCode: null as string | null,
   riskLevel: 'LOW' as RiskLevel,
   status: 'DRAFT' as CatalogStatus
 })
@@ -34,11 +39,18 @@ const form = reactive({
 const filteredResources = computed(() => (catalog.value?.resources || []).filter((item: any) =>
   `${item.name} ${item.code} ${item.domain}`.toLowerCase().includes(search.value.toLowerCase())
 ))
-const dataDomainOptions = computed(() => (catalog.value?.dataDomains || []).map((item: any) => ({
-  label: `${item.name} · ${item.code}`,
-  value: item.code
-})))
 const modalTitle = computed(() => editingResourceId.value ? '编辑资源' : '新建资源')
+
+watch(() => form.domain, (domain, previousDomain) => {
+  if (editingResourceId.value) return
+  const nextPrefix = resourceCodePrefixes[domain] || ''
+  const previousPrefix = resourceCodePrefixes[previousDomain] || ''
+  if (!form.code) {
+    form.code = nextPrefix
+  } else if (previousPrefix && form.code.startsWith(previousPrefix)) {
+    form.code = `${nextPrefix}${form.code.slice(previousPrefix.length)}`
+  }
+})
 
 function riskColor(risk: string): 'error' | 'warning' | 'neutral' {
   return risk === 'HIGH' ? 'error' : risk === 'MEDIUM' ? 'warning' : 'neutral'
@@ -55,7 +67,7 @@ function statusLabel(status: string) {
 function resetForm() {
   editingResourceId.value = null
   changeReason.value = ''
-  Object.assign(form, { name: '', code: '', domain: '信息板块', dataDomainCode: null, riskLevel: 'LOW', status: 'DRAFT' })
+  Object.assign(form, { name: '', code: 'crm.', domain: '信息板块', riskLevel: 'LOW', status: 'DRAFT' })
 }
 
 function createResource() {
@@ -70,7 +82,6 @@ function editResource(item: any) {
     name: item.name,
     code: item.code,
     domain: item.domain,
-    dataDomainCode: item.dataDomainCode || null,
     riskLevel: item.riskLevel,
     status: item.status
   })
@@ -83,7 +94,6 @@ async function saveResource() {
     const payload = {
       name: form.name,
       domain: form.domain,
-      dataDomainCode: form.dataDomainCode,
       riskLevel: form.riskLevel,
       status: form.status
     }
@@ -131,7 +141,6 @@ async function saveResource() {
               <tr>
                 <th>资源</th>
                 <th>业务板块</th>
-                <th>数据域</th>
                 <th>风险</th>
                 <th>菜单绑定</th>
                 <th>状态</th>
@@ -147,7 +156,6 @@ async function saveResource() {
                   </div>
                 </td>
                 <td>{{ item.domain }}</td>
-                <td><span class="code">{{ item.dataDomainCode || '不受行级范围控制' }}</span></td>
                 <td><UBadge :color="riskColor(item.riskLevel)" variant="subtle" :label="item.riskLevel" /></td>
                 <td>{{ item.menuCount }} 个</td>
                 <td><UBadge :color="statusColor(item.status)" variant="subtle" :label="statusLabel(item.status)" /></td>
@@ -167,16 +175,13 @@ async function saveResource() {
           </UFormField>
           <UFormField label="稳定资源码" required>
             <UInput v-model="form.code" class="code" :disabled="!!editingResourceId" placeholder="sc.purchase_order.create" />
-            <p v-if="editingResourceId" class="form-help">资源码启用后作为研发契约保持不变。</p>
+            <p class="form-help">{{ editingResourceId ? '资源码启用后作为研发契约保持不变。' : `已按业务板块预填 ${resourceCodePrefixes[form.domain] || ''} 前缀。` }}</p>
           </UFormField>
           <UFormField label="业务板块" required>
             <USelect v-model="form.domain" :items="domains" />
           </UFormField>
           <UFormField label="风险等级" required>
             <USelect v-model="form.riskLevel" :items="riskItems" value-key="value" />
-          </UFormField>
-          <UFormField label="数据域（选填）" description="留空表示不参与行级数据范围判定。">
-            <USelect v-model="form.dataDomainCode" :items="dataDomainOptions" value-key="value" placeholder="不受行级范围控制" />
           </UFormField>
           <UFormField label="状态" required>
             <USelect v-model="form.status" :items="editingResourceId ? editStatusItems : createStatusItems" value-key="value" />

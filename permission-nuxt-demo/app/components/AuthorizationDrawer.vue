@@ -175,7 +175,7 @@ async function save() {
 
 <template>
   <USlideover v-model:open="open" :title="`${subjectType === 'role' ? '角色授权' : '用户授权'} · ${subjectName}`"
-    :description="subjectType === 'role' ? '角色是可复用模板；不在这里配置数据范围。' : '角色模板与用户直接加授叠加；直授仅支持 ALLOW。'" :dismissible="!saving"
+    :description="subjectType === 'role' ? '角色是可复用的菜单与资源授权模板。' : '角色模板与用户直接加授叠加；直授仅支持 ALLOW。'" :dismissible="!saving"
     :ui="{ content: 'sm:max-w-3xl' }">
     <template #body>
       <div v-if="loading" class="empty-state">
@@ -192,6 +192,26 @@ async function save() {
             <div class="grant-metric"><b>{{ selectedRoleIds.length }}</b><span>角色模板</span></div>
             <div class="grant-metric"><b style="color: var(--app-green)">+{{ addedCount }}</b><span>本次新增</span></div>
             <div class="grant-metric"><b style="color: var(--app-red)">−{{ removedCount }}</b><span>本次移除</span></div>
+          </div>
+
+          <div v-if="subjectType === 'user'" class="panel" style="margin-bottom: 14px; box-shadow: none">
+            <div class="panel-head">
+              <div>
+                <h3>角色模板（可多选）</h3>
+                <p>优先通过角色批量复用常规权限，再在下方按需配置用户直授。</p>
+              </div>
+              <UBadge color="primary" variant="subtle" :label="`已选 ${selectedRoleIds.length} 个`" />
+            </div>
+            <div class="panel-body source-list" style="grid-template-columns: repeat(2, minmax(0, 1fr))">
+              <label v-for="role in roles" :key="role.id" class="source-card"
+                style="display: flex; gap: 10px; align-items: center; cursor: pointer">
+                <UCheckbox :model-value="selectedRoleIds.includes(role.id)"
+                  @update:model-value="toggleRole(role.id, $event === true)" />
+                <span><b>{{ role.name }}</b>
+                  <p>{{ role.code }} · {{ role.permissionCount }} 项权限</p>
+                </span>
+              </label>
+            </div>
           </div>
 
           <div class="tab-strip" style="margin-bottom: 14px; overflow-x: auto">
@@ -238,25 +258,6 @@ async function save() {
               <UButton color="primary" variant="soft" size="sm" label="查看资源反显" @click="activeTab = 'resource'" />
             </div>
 
-            <div v-if="subjectType === 'user' && activeTab === 'menu'" class="panel"
-              style="margin-top: 14px; box-shadow: none">
-              <div class="panel-head">
-                <div>
-                  <h3>叠加角色模板</h3>
-                  <p>若要让用户少于角色权限，应拆分或移除角色，不使用 DENY。</p>
-                </div>
-              </div>
-              <div class="panel-body source-list">
-                <label v-for="role in roles" :key="role.id" class="source-card"
-                  style="display: flex; gap: 10px; align-items: center">
-                  <UCheckbox :model-value="selectedRoleIds.includes(role.id)"
-                    @update:model-value="toggleRole(role.id, $event === true)" />
-                  <span><b>{{ role.name }}</b>
-                    <p>{{ role.code }} · {{ role.domain }} · {{ role.permissionCount }} 项</p>
-                  </span>
-                </label>
-              </div>
-            </div>
           </template>
 
           <template v-else>

@@ -53,8 +53,8 @@ function formatTime(value: string) {
     <div class="panel" style="margin-bottom: 18px">
       <div class="panel-head">
         <div>
-          <h2>一次请求的最终判定</h2>
-          <p>能力与数据范围必须同时满足；菜单可见从来不是安全边界。</p>
+          <h2>用户有效授权如何汇总</h2>
+          <p>菜单、角色与用户直授都可追溯来源；前端可见性从来不是安全边界。</p>
         </div>
         <UBadge color="primary" variant="subtle" :label="`Policy v${data?.versions?.policy_version || '—'}`" />
       </div>
@@ -65,8 +65,6 @@ function formatTime(value: string) {
           <div class="formula-item"><b>用户直接加授</b><span>少量、临时、可审计例外</span></div>
           <div class="formula-op">∪</div>
           <div class="formula-item"><b>菜单 CORE</b><span>页面所需的安全最小能力</span></div>
-          <div class="formula-op">AND</div>
-          <div class="formula-item"><b>岗位 × 数据域</b><span>本人 / 部门 / 部门及下级 / 指定部门 / 全部</span></div>
         </div>
       </div>
     </div>
@@ -78,7 +76,7 @@ function formatTime(value: string) {
             <h2>模块健康度</h2>
             <p>每一层都保留自己的职责边界。</p>
           </div>
-          <UBadge color="success" variant="subtle" label="浏览器策略引擎演示" />
+          <UBadge color="success" variant="subtle" label="浏览器授权演示" />
         </div>
         <div class="panel-body">
           <div class="detail-grid">
@@ -90,7 +88,7 @@ function formatTime(value: string) {
             <div class="detail-cell"><span>缓存键</span><b class="code">userId + policyVersion</b></div>
           </div>
           <div class="inline-alert" style="margin-top: 14px">
-            <UIcon name="i-lucide-info" size="16" /><span>当前为纯静态 Demo：权限计算、数据过滤与审计均在浏览器内模拟并保存到 localStorage。生产实现仍须由服务端完成身份校验与最终放行。</span>
+            <UIcon name="i-lucide-info" size="16" /><span>当前为纯静态 Demo：授权计算与审计在浏览器内模拟并保存到 localStorage。生产实现仍须由服务端完成身份校验与最终放行。</span>
           </div>
         </div>
       </section>

@@ -12,7 +12,8 @@ const saving = ref(false)
 const bindingSearch = ref('')
 const bindingReason = ref('')
 const bindingLevels = reactive<Record<string, 'CORE' | 'OPTIONAL' | 'NONE'>>({})
-const form = reactive({ nodeType: 'MENU' as 'BOARD' | 'DIRECTORY' | 'MENU', name: '', code: '', parentId: undefined as string | undefined, permissionCode: '', routePath: '' })
+const nodeCodePrefixes = { BOARD: 'BOARD_', DIRECTORY: 'DIR_', MENU: 'MENU_' } as const
+const form = reactive({ nodeType: 'MENU' as 'BOARD' | 'DIRECTORY' | 'MENU', name: '', code: 'MENU_', parentId: undefined as string | undefined, permissionCode: 'menu.', routePath: '' })
 
 const allMenus = computed<MenuNode[]>(() => catalog.value?.menus || [])
 const selected = computed(() => allMenus.value.find(item => item.id === selectedId.value) || null)
@@ -24,7 +25,17 @@ const bindingCandidates = computed(() => (catalog.value?.resources || []).filter
 const coreCount = computed(() => Object.values(bindingLevels).filter(level => level === 'CORE').length)
 const optionalCount = computed(() => Object.values(bindingLevels).filter(level => level === 'OPTIONAL').length)
 
-watch(() => form.nodeType, type => { form.parentId = undefined; if (type !== 'MENU') { form.permissionCode = ''; form.routePath = '' } })
+watch(() => form.nodeType, (type) => {
+  const suffix = form.code.replace(/^(BOARD_|DIR_|MENU_)/, '')
+  form.code = `${nodeCodePrefixes[type]}${suffix}`
+  form.parentId = undefined
+  if (type !== 'MENU') {
+    form.permissionCode = ''
+    form.routePath = ''
+  } else if (!form.permissionCode) {
+    form.permissionCode = 'menu.'
+  }
+})
 
 function selectMenu(node: MenuNode) { selectedId.value = node.id }
 function openBindings() {
@@ -36,7 +47,8 @@ function openBindings() {
   bindingOpen.value = true
 }
 function setLevel(item: any, level: 'CORE' | 'OPTIONAL' | 'NONE') { if (level !== 'CORE' || item.riskLevel !== 'HIGH') bindingLevels[item.id] = level }
-function resetMenu() { Object.assign(form, { nodeType: 'MENU', name: '', code: '', parentId: undefined, permissionCode: '', routePath: '' }) }
+function resetMenu() { Object.assign(form, { nodeType: 'MENU', name: '', code: 'MENU_', parentId: undefined, permissionCode: 'menu.', routePath: '' }) }
+function openCreateMenu() { resetMenu(); createOpen.value = true }
 
 async function createMenu() {
   saving.value = true
@@ -61,7 +73,7 @@ async function publishBindings() {
 
 <template>
   <div>
-    <PageHeader title="板块 → 目录 → 页面菜单" description="板块与目录只用于分组；页面菜单携带资源包。授予菜单时自动展开 CORE，高风险资源保持 OPTIONAL。"><UButton color="primary" icon="i-lucide-panel-top-open" label="新建菜单节点" @click="createOpen = true" /></PageHeader>
+    <PageHeader title="板块 → 目录 → 页面菜单" description="板块与目录只用于分组；页面菜单携带资源包。授予菜单时自动展开 CORE，高风险资源保持 OPTIONAL。"><UButton color="primary" icon="i-lucide-panel-top-open" label="新建菜单节点" @click="openCreateMenu" /></PageHeader>
     <div class="split-grid">
       <section class="panel"><div class="panel-head"><div><h2>目录菜单树</h2><p>新增子菜单不会自动进入历史父节点授权。</p></div><UButton color="neutral" variant="ghost" icon="i-lucide-refresh-cw" :loading="pending" @click="refresh()" /></div><div class="panel-body"><MenuManagementTree :nodes="catalog?.menuTree || []" :selected-id="selectedId" @select="selectMenu" /></div></section>
       <section class="panel">
@@ -74,7 +86,7 @@ async function publishBindings() {
     </div>
 
     <UModal v-model:open="createOpen" title="新建目录菜单节点" description="新建与编辑完全分离；保存后会真实插入树并选中。" :dismissible="!saving" :ui="{ content: 'sm:max-w-2xl' }">
-      <template #body><div class="form-grid"><UFormField label="节点类型" required class="span-2"><div class="tab-strip"><button v-for="type in ['BOARD', 'DIRECTORY', 'MENU']" :key="type" class="tab-button" :class="{ active: form.nodeType === type }" @click="form.nodeType = type as any">{{ type === 'BOARD' ? '板块' : type === 'DIRECTORY' ? '目录' : '页面菜单' }}</button></div></UFormField><UFormField label="名称" required><UInput v-model="form.name" placeholder="例如：商机列表" /></UFormField><UFormField label="菜单编码" required><UInput v-model="form.code" class="code" placeholder="MENU_CRM_OPPORTUNITY_LIST" /></UFormField><UFormField v-if="form.nodeType !== 'BOARD'" label="上级节点" required><USelect v-model="form.parentId" :items="parentOptions" value-key="value" placeholder="选择合法父节点" /></UFormField><template v-if="form.nodeType === 'MENU'"><UFormField label="菜单权限码" required><UInput v-model="form.permissionCode" class="code" placeholder="menu.info.opportunity.list" /></UFormField><UFormField label="前端路由" required><UInput v-model="form.routePath" class="code" placeholder="/info/opportunity/list" /></UFormField></template></div><div class="inline-alert" style="margin-top: 14px"><UIcon name="i-lucide-info" size="16" /><span>仅保留菜单结构与路由的关键字段；排序、图标和组件键使用系统默认值。</span></div></template>
+      <template #body><div class="form-grid"><UFormField label="节点类型" required class="span-2"><div class="tab-strip"><button v-for="type in ['BOARD', 'DIRECTORY', 'MENU']" :key="type" class="tab-button" :class="{ active: form.nodeType === type }" @click="form.nodeType = type as any">{{ type === 'BOARD' ? '板块' : type === 'DIRECTORY' ? '目录' : '页面菜单' }}</button></div></UFormField><UFormField label="名称" required><UInput v-model="form.name" placeholder="例如：商机列表" /></UFormField><UFormField label="菜单编码" required><UInput v-model="form.code" class="code" placeholder="MENU_CRM_OPPORTUNITY_LIST" /></UFormField><UFormField v-if="form.nodeType !== 'BOARD'" label="上级节点" required><USelect v-model="form.parentId" :items="parentOptions" value-key="value" placeholder="选择合法父节点" /></UFormField><template v-if="form.nodeType === 'MENU'"><UFormField label="菜单权限码" required><UInput v-model="form.permissionCode" class="code" placeholder="menu.info.opportunity.list" /></UFormField><UFormField label="前端路由" required><UInput v-model="form.routePath" class="code" placeholder="/info/opportunity/list" /></UFormField></template></div><div class="inline-alert" style="margin-top: 14px"><UIcon name="i-lucide-info" size="16" /><span>节点编码会按类型预填 <span class="code">BOARD_ / DIR_ / MENU_</span>；页面菜单权限码预填 <span class="code">menu.</span>。排序、图标和组件键使用系统默认值。</span></div></template>
       <template #footer><div class="modal-actions"><UButton color="neutral" variant="ghost" label="取消" :disabled="saving" @click="createOpen = false" /><UButton color="primary" label="创建节点" :loading="saving" @click="createMenu" /></div></template>
     </UModal>
 

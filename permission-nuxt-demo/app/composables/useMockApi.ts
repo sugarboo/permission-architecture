@@ -1,15 +1,13 @@
-import { canAccessOwnedRow, mergePermissionCandidates, type PermissionCandidate } from '~/utils/policy-rules'
+import { mergePermissionCandidates, type PermissionCandidate } from '~/utils/policy-rules'
 
 type Status = 'DRAFT' | 'ACTIVE' | 'DISABLED'
 type RiskLevel = 'LOW' | 'MEDIUM' | 'HIGH'
-type ScopeType = 'NONE' | 'SELF' | 'DEPT' | 'DEPT_AND_DESCENDANTS' | 'CUSTOM_DEPTS' | 'ALL'
 
 type MockResource = {
   id: string
   code: string
   name: string
   domain: string
-  dataDomainCode: string | null
   riskLevel: RiskLevel
   status: Status
 }
@@ -27,15 +25,6 @@ type MockMenu = {
   status: 'ACTIVE' | 'DISABLED'
 }
 
-type MockScope = {
-  id: string
-  positionId: string
-  dataDomainCode: string
-  scopeType: ScopeType
-  includeDescendants: boolean
-  customOrgUnitIds: string[]
-}
-
 type DirectGrant = {
   id: string
   permissionId: string
@@ -46,13 +35,13 @@ type DirectGrant = {
 }
 
 type MockDatabase = {
-  schemaVersion: 2
+  schemaVersion: 3
   policyVersion: number
   catalogVersion: number
   users: Array<{
     id: string
     username: string
-    employeeNo: string
+    employeeNo: string | null
     displayName: string
     status: 'ACTIVE' | 'DISABLED'
     authzVersion: number
@@ -65,7 +54,6 @@ type MockDatabase = {
     id: string
     code: string
     name: string
-    domain: string
     status: 'ACTIVE' | 'DISABLED'
     permissionIds: string[]
   }>
@@ -92,15 +80,6 @@ type MockDatabase = {
     orgUnitId: string
     status: 'ACTIVE' | 'DISABLED'
   }>
-  scopes: MockScope[]
-  dataDomains: Array<{ code: string, name: string, description: string }>
-  customers: Array<{
-    id: string
-    name: string
-    status: string
-    ownerUserId: string
-    ownerOrgUnitId: string
-  }>
   audits: Array<{
     id: string
     action: string
@@ -119,27 +98,27 @@ type MockFetchOptions = {
   body?: unknown
 }
 
-const STORAGE_KEY = 'permission-center-static-demo-v2'
+const STORAGE_KEY = 'permission-center-static-demo-v3'
 const STAMP = '2026-08-10T08:30:00.000Z'
 
 const resourceSeeds: MockResource[] = [
-  { id: 'p_iam_user_manage', code: 'iam.user.manage', name: '管理用户', domain: '权限中心', dataDomainCode: null, riskLevel: 'MEDIUM', status: 'ACTIVE' },
-  { id: 'p_iam_role_manage', code: 'iam.role.manage', name: '管理角色', domain: '权限中心', dataDomainCode: null, riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_iam_catalog_manage', code: 'iam.catalog.manage', name: '管理资源目录', domain: '权限中心', dataDomainCode: null, riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_iam_menu_manage', code: 'iam.menu.manage', name: '管理菜单权限包', domain: '权限中心', dataDomainCode: null, riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_iam_org_manage', code: 'iam.org.manage', name: '管理组织岗位', domain: '权限中心', dataDomainCode: null, riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_iam_audit_read', code: 'iam.audit.read', name: '查看授权审计', domain: '权限中心', dataDomainCode: null, riskLevel: 'LOW', status: 'ACTIVE' },
-  { id: 'p_crm_read', code: 'crm.customer.read', name: '查看客户', domain: '信息板块', dataDomainCode: 'crm.customer', riskLevel: 'LOW', status: 'ACTIVE' },
-  { id: 'p_crm_create', code: 'crm.customer.create', name: '新建客户', domain: '信息板块', dataDomainCode: 'crm.customer', riskLevel: 'MEDIUM', status: 'ACTIVE' },
-  { id: 'p_crm_update', code: 'crm.customer.update', name: '编辑客户', domain: '信息板块', dataDomainCode: 'crm.customer', riskLevel: 'MEDIUM', status: 'ACTIVE' },
-  { id: 'p_crm_export', code: 'crm.customer.export', name: '导出客户', domain: '信息板块', dataDomainCode: 'crm.customer', riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_crm_delete', code: 'crm.customer.delete', name: '删除客户', domain: '信息板块', dataDomainCode: 'crm.customer', riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_sc_read', code: 'sc.purchase_order.read', name: '查看采购单', domain: '供应链板块', dataDomainCode: 'sc.purchase_order', riskLevel: 'LOW', status: 'ACTIVE' },
-  { id: 'p_sc_create', code: 'sc.purchase_order.create', name: '新建采购单', domain: '供应链板块', dataDomainCode: 'sc.purchase_order', riskLevel: 'MEDIUM', status: 'ACTIVE' },
-  { id: 'p_sc_approve', code: 'sc.purchase_order.approve', name: '审批采购单', domain: '供应链板块', dataDomainCode: 'sc.purchase_order', riskLevel: 'HIGH', status: 'ACTIVE' },
-  { id: 'p_design_read', code: 'designer.asset.read', name: '查看设计任务', domain: '设计师板块', dataDomainCode: 'designer.asset', riskLevel: 'LOW', status: 'ACTIVE' },
-  { id: 'p_design_submit', code: 'designer.asset.submit', name: '提交设计稿', domain: '设计师板块', dataDomainCode: 'designer.asset', riskLevel: 'MEDIUM', status: 'ACTIVE' },
-  { id: 'p_design_review', code: 'designer.asset.review', name: '评审设计稿', domain: '设计师板块', dataDomainCode: 'designer.asset', riskLevel: 'HIGH', status: 'ACTIVE' }
+  { id: 'p_iam_user_manage', code: 'iam.user.manage', name: '管理用户', domain: '权限中心', riskLevel: 'MEDIUM', status: 'ACTIVE' },
+  { id: 'p_iam_role_manage', code: 'iam.role.manage', name: '管理角色', domain: '权限中心', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_iam_catalog_manage', code: 'iam.catalog.manage', name: '管理资源目录', domain: '权限中心', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_iam_menu_manage', code: 'iam.menu.manage', name: '管理菜单权限包', domain: '权限中心', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_iam_org_manage', code: 'iam.org.manage', name: '管理组织岗位', domain: '权限中心', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_iam_audit_read', code: 'iam.audit.read', name: '查看授权审计', domain: '权限中心', riskLevel: 'LOW', status: 'ACTIVE' },
+  { id: 'p_crm_read', code: 'crm.customer.read', name: '查看客户', domain: '信息板块', riskLevel: 'LOW', status: 'ACTIVE' },
+  { id: 'p_crm_create', code: 'crm.customer.create', name: '新建客户', domain: '信息板块', riskLevel: 'MEDIUM', status: 'ACTIVE' },
+  { id: 'p_crm_update', code: 'crm.customer.update', name: '编辑客户', domain: '信息板块', riskLevel: 'MEDIUM', status: 'ACTIVE' },
+  { id: 'p_crm_export', code: 'crm.customer.export', name: '导出客户', domain: '信息板块', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_crm_delete', code: 'crm.customer.delete', name: '删除客户', domain: '信息板块', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_sc_read', code: 'sc.purchase_order.read', name: '查看采购单', domain: '供应链板块', riskLevel: 'LOW', status: 'ACTIVE' },
+  { id: 'p_sc_create', code: 'sc.purchase_order.create', name: '新建采购单', domain: '供应链板块', riskLevel: 'MEDIUM', status: 'ACTIVE' },
+  { id: 'p_sc_approve', code: 'sc.purchase_order.approve', name: '审批采购单', domain: '供应链板块', riskLevel: 'HIGH', status: 'ACTIVE' },
+  { id: 'p_design_read', code: 'designer.asset.read', name: '查看设计任务', domain: '设计师板块', riskLevel: 'LOW', status: 'ACTIVE' },
+  { id: 'p_design_submit', code: 'designer.asset.submit', name: '提交设计稿', domain: '设计师板块', riskLevel: 'MEDIUM', status: 'ACTIVE' },
+  { id: 'p_design_review', code: 'designer.asset.review', name: '评审设计稿', domain: '设计师板块', riskLevel: 'HIGH', status: 'ACTIVE' }
 ]
 
 function createSeedDatabase(): MockDatabase {
@@ -147,7 +126,7 @@ function createSeedDatabase(): MockDatabase {
   const allMenuPermissionIds = ['p_menu_customer', 'p_menu_purchase', 'p_menu_design']
 
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     policyVersion: 7,
     catalogVersion: 3,
     users: [
@@ -158,11 +137,11 @@ function createSeedDatabase(): MockDatabase {
       { id: 'u_diana', username: 'zhao.ning', employeeNo: 'EMP0312', displayName: '赵宁', status: 'ACTIVE', authzVersion: 5, orgUnitId: 'o_design', positionId: 'pos_designer', roleIds: ['r_designer'], directGrants: [{ id: 'grant_diana_review', permissionId: 'p_design_review', reason: '设计评审轮值', sourceTicket: null, validFrom: STAMP, validTo: null }] }
     ],
     roles: [
-      { id: 'r_admin', code: 'SUPER_ADMIN', name: '系统权限管理员', domain: '权限中心', status: 'ACTIVE', permissionIds: [...allResourceIds, ...allMenuPermissionIds] },
-      { id: 'r_sales_rep', code: 'SALES_REP', name: '销售专员', domain: '信息板块', status: 'ACTIVE', permissionIds: ['p_menu_customer', 'p_crm_create', 'p_crm_update'] },
-      { id: 'r_sales_manager', code: 'SALES_MANAGER', name: '销售主管', domain: '信息板块', status: 'ACTIVE', permissionIds: ['p_menu_customer', 'p_crm_create', 'p_crm_update', 'p_crm_export'] },
-      { id: 'r_purchase', code: 'PURCHASE_SPECIALIST', name: '采购专员', domain: '供应链板块', status: 'ACTIVE', permissionIds: ['p_menu_purchase', 'p_sc_create'] },
-      { id: 'r_designer', code: 'DESIGNER', name: '设计师', domain: '设计师板块', status: 'ACTIVE', permissionIds: ['p_menu_design', 'p_design_submit'] }
+      { id: 'r_admin', code: 'ROLE_SUPER_ADMIN', name: '系统权限管理员', status: 'ACTIVE', permissionIds: [...allResourceIds, ...allMenuPermissionIds] },
+      { id: 'r_sales_rep', code: 'ROLE_SALES_REP', name: '销售专员', status: 'ACTIVE', permissionIds: ['p_menu_customer', 'p_crm_create', 'p_crm_update'] },
+      { id: 'r_sales_manager', code: 'ROLE_SALES_MANAGER', name: '销售主管', status: 'ACTIVE', permissionIds: ['p_menu_customer', 'p_crm_create', 'p_crm_update', 'p_crm_export'] },
+      { id: 'r_purchase', code: 'ROLE_PURCHASE_SPECIALIST', name: '采购专员', status: 'ACTIVE', permissionIds: ['p_menu_purchase', 'p_sc_create'] },
+      { id: 'r_designer', code: 'ROLE_DESIGNER', name: '设计师', status: 'ACTIVE', permissionIds: ['p_menu_design', 'p_design_submit'] }
     ],
     resources: structuredClone(resourceSeeds),
     menus: [
@@ -204,28 +183,6 @@ function createSeedDatabase(): MockDatabase {
       { id: 'pos_purchase', name: '采购专员', orgUnitId: 'o_supply', status: 'ACTIVE' },
       { id: 'pos_designer', name: '设计师', orgUnitId: 'o_design', status: 'ACTIVE' }
     ],
-    scopes: [
-      { id: 'scope_admin_crm', positionId: 'pos_admin', dataDomainCode: 'crm.customer', scopeType: 'ALL', includeDescendants: true, customOrgUnitIds: [] },
-      { id: 'scope_admin_sc', positionId: 'pos_admin', dataDomainCode: 'sc.purchase_order', scopeType: 'ALL', includeDescendants: true, customOrgUnitIds: [] },
-      { id: 'scope_admin_design', positionId: 'pos_admin', dataDomainCode: 'designer.asset', scopeType: 'ALL', includeDescendants: true, customOrgUnitIds: [] },
-      { id: 'scope_sales_rep_crm', positionId: 'pos_sales_rep', dataDomainCode: 'crm.customer', scopeType: 'SELF', includeDescendants: false, customOrgUnitIds: [] },
-      { id: 'scope_sales_manager_crm', positionId: 'pos_sales_manager', dataDomainCode: 'crm.customer', scopeType: 'DEPT_AND_DESCENDANTS', includeDescendants: true, customOrgUnitIds: [] },
-      { id: 'scope_purchase_sc', positionId: 'pos_purchase', dataDomainCode: 'sc.purchase_order', scopeType: 'DEPT', includeDescendants: false, customOrgUnitIds: [] },
-      { id: 'scope_designer_asset', positionId: 'pos_designer', dataDomainCode: 'designer.asset', scopeType: 'SELF', includeDescendants: false, customOrgUnitIds: [] }
-    ],
-    dataDomains: [
-      { code: 'crm.customer', name: '客户', description: '客户负责人及归属部门范围' },
-      { code: 'crm.contract', name: '合同', description: '合同负责人及归属部门范围' },
-      { code: 'sc.purchase_order', name: '采购订单', description: '采购订单归属部门范围' },
-      { code: 'designer.asset', name: '设计稿', description: '设计任务负责人及团队范围' }
-    ],
-    customers: [
-      { id: 'c_001', name: '云帆零售', status: 'FOLLOW_UP', ownerUserId: 'u_alice', ownerOrgUnitId: 'o_east' },
-      { id: 'c_002', name: '盛景智能', status: 'ACTIVE', ownerUserId: 'u_alice', ownerOrgUnitId: 'o_east' },
-      { id: 'c_003', name: '南岸文创', status: 'WON', ownerUserId: 'u_bob', ownerOrgUnitId: 'o_south' },
-      { id: 'c_004', name: '启明供应链', status: 'ACTIVE', ownerUserId: 'u_bob', ownerOrgUnitId: 'o_info' },
-      { id: 'c_005', name: '远岚设计', status: 'FOLLOW_UP', ownerUserId: 'u_diana', ownerOrgUnitId: 'o_design' }
-    ],
     audits: [
       { id: 'audit_002', action: 'DIRECT_GRANT', entityType: 'USER', entityId: 'u_bob', summary: '向陈峰加授“删除客户”', detailJson: JSON.stringify({ permissionCode: 'crm.customer.delete', validTo: null }), createdAt: '2026-08-10T08:42:00.000Z', actorName: '周睿', actorUsername: 'admin' },
       { id: 'audit_001', action: 'SYSTEM_SEED', entityType: 'SYSTEM', entityId: 'permission-center', summary: '初始化浏览器端 Mock 数据', detailJson: JSON.stringify({ policyVersion: 7, persistence: 'localStorage' }), createdAt: STAMP, actorName: '周睿', actorUsername: 'admin' }
@@ -252,15 +209,15 @@ function ensureText(value: unknown, fallback: string) {
 }
 
 export function useMockApi() {
-  const database = useState<MockDatabase>('permission-static-mock-db-v2', createSeedDatabase)
-  const hydrated = useState<boolean>('permission-static-mock-hydrated-v2', () => false)
+  const database = useState<MockDatabase>('permission-static-mock-db-v3', createSeedDatabase)
+  const hydrated = useState<boolean>('permission-static-mock-hydrated-v3', () => false)
 
   if (import.meta.client && !hydrated.value) {
     hydrated.value = true
     try {
       const saved = localStorage.getItem(STORAGE_KEY)
       const parsed = saved ? JSON.parse(saved) as MockDatabase : null
-      if (parsed?.schemaVersion === 2) database.value = parsed
+      if (parsed?.schemaVersion === 3) database.value = parsed
     } catch {
       localStorage.removeItem(STORAGE_KEY)
     }
@@ -310,7 +267,6 @@ export function useMockApi() {
       name: `${menu.name}菜单`,
       type: 'MENU' as const,
       domain: database.value.menus.find(item => item.id === database.value.menus.find(parent => parent.id === menu.parentId)?.parentId)?.name || '菜单',
-      dataDomainCode: null,
       riskLevel: 'LOW' as const,
       status: menu.status
     }
@@ -321,58 +277,6 @@ export function useMockApi() {
     if (resource) return { ...resource, type: 'RESOURCE' as const }
     const menu = database.value.menus.find(item => item.permissionId === permissionId)
     return menu ? menuPermission(menu) : null
-  }
-
-  function descendants(unitId: string) {
-    const result = new Set<string>([unitId])
-    let changed = true
-    while (changed) {
-      changed = false
-      for (const unit of database.value.units) {
-        if (unit.parentId && result.has(unit.parentId) && !result.has(unit.id)) {
-          result.add(unit.id)
-          changed = true
-        }
-      }
-    }
-    return [...result]
-  }
-
-  function resolveDataAccess(userId: string, dataDomainCode: string) {
-    const user = database.value.users.find(item => item.id === userId)
-    const position = user ? database.value.positions.find(item => item.id === user.positionId) : null
-    const unit = user ? database.value.units.find(item => item.id === user.orgUnitId) : null
-    const rules = position ? database.value.scopes.filter(item => item.positionId === position.id && item.dataDomainCode === dataDomainCode) : []
-    const orgUnitIds = new Set<string>()
-    let all = false
-    let self = false
-
-    for (const rule of rules) {
-      if (rule.scopeType === 'ALL') all = true
-      if (rule.scopeType === 'SELF') self = true
-      if (rule.scopeType === 'DEPT' && unit) orgUnitIds.add(unit.id)
-      if (rule.scopeType === 'DEPT_AND_DESCENDANTS' && unit) descendants(unit.id).forEach(item => orgUnitIds.add(item))
-      if (rule.scopeType === 'CUSTOM_DEPTS') {
-        for (const target of rule.customOrgUnitIds) {
-          const expanded = rule.includeDescendants ? descendants(target) : [target]
-          expanded.forEach(item => orgUnitIds.add(item))
-        }
-      }
-    }
-
-    return {
-      dataDomainCode,
-      all,
-      self,
-      orgUnitIds: [...orgUnitIds],
-      scopes: rules.map(rule => ({
-        positionId: position!.id,
-        positionName: position!.name,
-        orgUnitId: unit?.id || '',
-        orgUnitName: unit?.name || '未分配组织',
-        scopeType: rule.scopeType
-      }))
-    }
   }
 
   function effective(userId: string) {
@@ -417,8 +321,7 @@ export function useMockApi() {
       policyVersion: database.value.policyVersion,
       roleIds: [...user.roleIds],
       directGrantCount: user.directGrants.length,
-      permissions,
-      dataAccess: database.value.dataDomains.map(domain => resolveDataAccess(user.id, domain.code))
+      permissions
     }
   }
 
@@ -459,7 +362,6 @@ export function useMockApi() {
       menus,
       menuTree: buildTree(menus),
       menuBindings,
-      dataDomains: clone(database.value.dataDomains),
       versions: { policy_version: database.value.policyVersion, catalog_version: database.value.catalogVersion }
     }
   }
@@ -481,7 +383,7 @@ export function useMockApi() {
       permissionCount: role.permissionIds.length,
       menuCount: role.permissionIds.filter(permissionId => database.value.menus.some(menu => menu.permissionId === permissionId)).length,
       resourceCount: role.permissionIds.filter(permissionId => database.value.resources.some(resource => resource.id === permissionId)).length
-    })).sort((a, b) => `${a.domain}:${a.name}`.localeCompare(`${b.domain}:${b.name}`))
+    })).sort((a, b) => `${a.name}:${a.code}`.localeCompare(`${b.name}:${b.code}`))
   }
 
   function orgView() {
@@ -497,27 +399,12 @@ export function useMockApi() {
       memberCount: database.value.users.filter(user => user.positionId === position.id).length,
       members: database.value.users.filter(user => user.positionId === position.id).map(user => ({ id: user.id, name: user.displayName, employeeNo: user.employeeNo }))
     }))
-    const scopes = database.value.scopes.map(scope => ({
-      ...scope,
-      includeDescendants: scope.includeDescendants ? 1 : 0,
-      dataDomainName: database.value.dataDomains.find(domain => domain.code === scope.dataDomainCode)?.name || scope.dataDomainCode
-    }))
     return {
       units,
       unitTree: buildTree(units),
       positions,
-      scopes,
-      dataDomains: clone(database.value.dataDomains),
       users: database.value.users.filter(user => user.status === 'ACTIVE').map(user => ({ id: user.id, displayName: user.displayName, employeeNo: user.employeeNo, orgUnitId: user.orgUnitId, positionId: user.positionId }))
     }
-  }
-
-  function customerRows() {
-    return database.value.customers.map(customer => ({
-      ...customer,
-      ownerName: database.value.users.find(user => user.id === customer.ownerUserId)?.displayName || '未知用户',
-      ownerOrgUnitName: database.value.units.find(unit => unit.id === customer.ownerOrgUnitId)?.name || '未知组织'
-    })).sort((a, b) => a.name.localeCompare(b.name))
   }
 
   function subjectView(type: string, subjectId: string) {
@@ -579,24 +466,13 @@ export function useMockApi() {
       const [, , , type, subjectId] = path.split('/')
       result = subjectView(type || '', decodeURIComponent(subjectId || ''))
     }
-    else if (method === 'GET' && path === '/api/demo/customers') {
-      const userId = request.searchParams.get('userId') || 'u_admin'
-      const context = effective(userId)
-      const canRead = context.permissions.some(item => item.code === 'crm.customer.read')
-      const rows = customerRows()
-      if (!canRead) result = { allowed: false, reason: '缺少 crm.customer.read', rows: [], totalBeforeFilter: rows.length }
-      else {
-        const access = resolveDataAccess(userId, 'crm.customer')
-        result = { allowed: true, dataAccess: access, rows: rows.filter(row => canAccessOwnedRow(access, row, userId)), totalBeforeFilter: rows.length }
-      }
-    }
     else if (method === 'POST' && path === '/api/users') {
       const userId = id('u')
       const displayName = ensureText(body.displayName, `演示用户 ${database.value.users.length + 1}`)
       database.value.users.push({
         id: userId,
         username: ensureText(body.username, `demo.${database.value.users.length + 1}`),
-        employeeNo: ensureText(body.employeeNo, `DEMO${String(database.value.users.length + 1).padStart(4, '0')}`),
+        employeeNo: null,
         displayName,
         status: body.status === 'DISABLED' ? 'DISABLED' : 'ACTIVE',
         authzVersion: 1,
@@ -613,16 +489,16 @@ export function useMockApi() {
     else if (method === 'POST' && path === '/api/roles') {
       const roleId = id('r')
       const name = ensureText(body.name, `演示角色 ${database.value.roles.length + 1}`)
-      database.value.roles.push({ id: roleId, code: ensureText(body.code, `DEMO_ROLE_${database.value.roles.length + 1}`), name, domain: ensureText(body.domain, '信息板块'), status: body.status === 'DISABLED' ? 'DISABLED' : 'ACTIVE', permissionIds: [] })
+      database.value.roles.push({ id: roleId, code: ensureText(body.code, `ROLE_DEMO_${database.value.roles.length + 1}`), name, status: body.status === 'DISABLED' ? 'DISABLED' : 'ACTIVE', permissionIds: [] })
       bumpPolicy()
-      writeAudit('CREATE_ROLE', 'ROLE', roleId, `新建角色“${name}”`, { code: body.code || null, domain: body.domain || null, storage: 'localStorage' })
+      writeAudit('CREATE_ROLE', 'ROLE', roleId, `新建角色“${name}”`, { code: body.code || null, storage: 'localStorage' })
       persist()
       result = { id: roleId }
     }
     else if (method === 'POST' && path === '/api/catalog/resources') {
       const resourceId = id('p')
       const name = ensureText(body.name, `演示资源 ${database.value.resources.length + 1}`)
-      database.value.resources.push({ id: resourceId, code: ensureText(body.code, `demo.resource.${database.value.resources.length + 1}`), name, domain: ensureText(body.domain, '信息板块'), dataDomainCode: body.dataDomainCode || null, riskLevel: ['LOW', 'MEDIUM', 'HIGH'].includes(body.riskLevel) ? body.riskLevel : 'LOW', status: ['DRAFT', 'ACTIVE'].includes(body.status) ? body.status : 'DRAFT' })
+      database.value.resources.push({ id: resourceId, code: ensureText(body.code, `demo.resource.${database.value.resources.length + 1}`), name, domain: ensureText(body.domain, '信息板块'), riskLevel: ['LOW', 'MEDIUM', 'HIGH'].includes(body.riskLevel) ? body.riskLevel : 'LOW', status: ['DRAFT', 'ACTIVE'].includes(body.status) ? body.status : 'DRAFT' })
       bumpCatalog()
       writeAudit('CREATE_RESOURCE', 'RESOURCE', resourceId, `新建资源“${name}”`, { code: body.code || null, status: body.status || 'DRAFT', storage: 'localStorage' })
       persist()
@@ -633,7 +509,7 @@ export function useMockApi() {
       const target = database.value.resources.find(item => item.id === resourceId)
       if (!target) throw new Error('资源不存在')
       const before = clone(target)
-      Object.assign(target, { name: ensureText(body.name, target.name), domain: ensureText(body.domain, target.domain), dataDomainCode: body.dataDomainCode || null, riskLevel: ['LOW', 'MEDIUM', 'HIGH'].includes(body.riskLevel) ? body.riskLevel : target.riskLevel, status: ['DRAFT', 'ACTIVE', 'DISABLED'].includes(body.status) ? body.status : target.status })
+      Object.assign(target, { name: ensureText(body.name, target.name), domain: ensureText(body.domain, target.domain), riskLevel: ['LOW', 'MEDIUM', 'HIGH'].includes(body.riskLevel) ? body.riskLevel : target.riskLevel, status: ['DRAFT', 'ACTIVE', 'DISABLED'].includes(body.status) ? body.status : target.status })
       bumpCatalog()
       writeAudit('UPDATE_RESOURCE', 'RESOURCE', resourceId, `编辑资源“${target.name}”`, { reason: body.reason || '静态 Demo 调整', before, after: clone(target) })
       persist()
@@ -679,8 +555,6 @@ export function useMockApi() {
       const positionId = id('pos')
       const name = ensureText(body.name, `演示岗位 ${database.value.positions.length + 1}`)
       database.value.positions.push({ id: positionId, name, orgUnitId: body.orgUnitId || 'o_info', status: 'ACTIVE' })
-      const scopes = Array.isArray(body.scopes) ? body.scopes : []
-      database.value.scopes.push(...scopes.map((scope: any) => ({ id: id('scope'), positionId, dataDomainCode: scope.dataDomainCode, scopeType: scope.scopeType || 'NONE', includeDescendants: Boolean(scope.includeDescendants), customOrgUnitIds: Array.isArray(scope.customOrgUnitIds) ? scope.customOrgUnitIds : [] })))
       bumpPolicy()
       writeAudit('CREATE_POSITION', 'POSITION', positionId, `新建岗位“${name}”`, { ...body, storage: 'localStorage' })
       persist()
@@ -693,27 +567,17 @@ export function useMockApi() {
       const position = database.value.positions.find(item => item.id === body.positionId && item.status === 'ACTIVE')
       if (!position) throw new Error('请选择有效岗位')
       if (position.orgUnitId !== body.orgUnitId) throw new Error('所选岗位不属于当前组织')
-      const before = { orgUnitId: user.orgUnitId, positionId: user.positionId }
+      const before = { employeeNo: user.employeeNo, orgUnitId: user.orgUnitId, positionId: user.positionId }
+      if (Object.prototype.hasOwnProperty.call(body, 'employeeNo')) {
+        const employeeNo = typeof body.employeeNo === 'string' ? body.employeeNo.trim() : ''
+        user.employeeNo = employeeNo || null
+      }
       user.orgUnitId = position.orgUnitId
       user.positionId = position.id
       bumpPolicy([user.id])
-      writeAudit('ASSIGN_POSITION', 'USER', user.id, `设置“${user.displayName}”的组织与岗位`, { reason: body.reason || '组织岗位维护', before, after: { orgUnitId: user.orgUnitId, positionId: user.positionId } })
+      writeAudit('ASSIGN_POSITION', 'USER', user.id, `设置“${user.displayName}”的组织与岗位`, { reason: body.reason || '组织岗位维护', before, after: { employeeNo: user.employeeNo, orgUnitId: user.orgUnitId, positionId: user.positionId } })
       persist()
-      result = { userId: user.id, orgUnitId: user.orgUnitId, positionId: user.positionId }
-    }
-    else if (method === 'PUT' && /^\/api\/org\/positions\/[^/]+\/scopes$/.test(path)) {
-      const positionId = decodeURIComponent(path.split('/')[4] || '')
-      const position = database.value.positions.find(item => item.id === positionId)
-      if (!position) throw new Error('岗位不存在')
-      const previous = clone(database.value.scopes.filter(item => item.positionId === positionId))
-      database.value.scopes = database.value.scopes.filter(item => item.positionId !== positionId)
-      const scopes = Array.isArray(body.scopes) ? body.scopes : []
-      database.value.scopes.push(...scopes.map((scope: any) => ({ id: id('scope'), positionId, dataDomainCode: scope.dataDomainCode, scopeType: scope.scopeType || 'NONE', includeDescendants: Boolean(scope.includeDescendants), customOrgUnitIds: Array.isArray(scope.customOrgUnitIds) ? scope.customOrgUnitIds : [] })))
-      const affectedUsers = database.value.users.filter(user => user.positionId === positionId).map(user => user.id)
-      bumpPolicy(affectedUsers)
-      writeAudit('UPDATE_POSITION_SCOPES', 'POSITION', positionId, `更新岗位“${position.name}”数据范围`, { reason: body.reason || '静态 Demo 调整', before: previous, after: scopes })
-      persist()
-      result = { affectedUsers: affectedUsers.length }
+      result = { userId: user.id, employeeNo: user.employeeNo, orgUnitId: user.orgUnitId, positionId: user.positionId }
     }
     else if (method === 'PUT' && path.startsWith('/api/subjects/')) {
       const [, , , type, subjectIdRaw] = path.split('/')
@@ -740,15 +604,6 @@ export function useMockApi() {
         persist()
         result = { userId: user.id }
       } else throw new Error('主体类型仅支持 user 或 role')
-    }
-    else if (method === 'POST' && path === '/api/simulate') {
-      const context = effective(body.userId)
-      const selectedPermission = context.permissions.find(item => item.code === body.permissionCode) || null
-      const dataDomainCode = body.dataDomainCode || selectedPermission?.dataDomainCode || null
-      const dataAccess = dataDomainCode ? resolveDataAccess(body.userId, dataDomainCode) : null
-      const customer = body.customerId ? customerRows().find(item => item.id === body.customerId) || null : null
-      const rowAllowed = customer ? Boolean(dataAccess && canAccessOwnedRow(dataAccess, customer, body.userId)) : null
-      result = { allowed: Boolean(selectedPermission) && (rowAllowed ?? true), capabilityAllowed: Boolean(selectedPermission), rowAllowed, permission: selectedPermission, dataAccess, customer }
     }
     else throw new Error(`静态 Mock 尚未实现：${method} ${path}`)
 
