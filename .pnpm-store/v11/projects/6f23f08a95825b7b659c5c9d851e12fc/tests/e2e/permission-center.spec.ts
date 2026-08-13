@@ -34,11 +34,34 @@ test('user create and tree authorization flows are interactive', async ({ page }
   await expect(authDialog.getByText('已选 1 个')).toBeVisible()
   await expect(authDialog.getByRole('tree')).toBeVisible()
   await expect(authDialog.getByRole('button', { name: '数据范围' })).toHaveCount(0)
-  await authDialog.getByRole('checkbox', { name: '选择 客户列表' }).click()
+
+  const customerMenu = authDialog.getByRole('checkbox', { name: '选择 客户列表' })
+  await expect(customerMenu).toBeChecked()
+  await expect(customerMenu).toBeDisabled()
+
+  await authDialog.getByRole('checkbox', { name: '选择角色 采购专员' }).click()
+  const purchaseMenu = authDialog.getByRole('checkbox', { name: '选择 采购订单' })
+  await expect(purchaseMenu).toBeChecked()
+  await expect(purchaseMenu).toBeDisabled()
+
   await authDialog.getByRole('button', { name: /^资源/ }).click()
-  await expect(authDialog.getByText('CORE 已自动反显')).toBeVisible()
-  await authDialog.getByRole('button', { name: '有效权限' }).click()
-  await expect(authDialog.getByText('菜单 CORE：客户列表').first()).toBeVisible()
+  await expect(authDialog.getByText('2 项 CORE 已自动反显')).toBeVisible()
+  await expect(authDialog.getByText('OPTIONAL 已黄色高亮')).toBeVisible()
+
+  const customerReadCheckbox = authDialog.getByRole('checkbox', { name: '选择 查看客户' })
+  const customerReadRow = customerReadCheckbox.locator('xpath=ancestor::div[contains(@class, "tree-row")][1]')
+  await expect(customerReadCheckbox).toBeChecked()
+  await expect(customerReadRow.getByText(/CORE 自动/)).toBeVisible()
+
+  const customerCreateCheckbox = authDialog.getByRole('checkbox', { name: '选择 新建客户' })
+  const customerCreateRow = customerCreateCheckbox.locator('xpath=ancestor::div[contains(@class, "tree-row")][1]')
+  await expect(customerCreateCheckbox).toBeChecked()
+  await expect(customerCreateRow.getByText('OPTIONAL · 角色已授')).toBeVisible()
+
+  const purchaseApproveCheckbox = authDialog.getByRole('checkbox', { name: '选择 审批采购单' })
+  const purchaseApproveRow = purchaseApproveCheckbox.locator('xpath=ancestor::div[contains(@class, "tree-row")][1]')
+  await expect(purchaseApproveCheckbox).not.toBeChecked()
+  await expect(purchaseApproveRow.getByText('OPTIONAL · 待选')).toBeVisible()
 })
 
 test('organization page owns user assignment', async ({ page }) => {

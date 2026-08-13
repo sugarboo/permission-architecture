@@ -378,7 +378,7 @@ export function useMockApi() {
   function rolesView() {
     return database.value.roles.map(role => ({
       ...role,
-      permissionIds: undefined,
+      permissionIds: [...role.permissionIds],
       memberCount: database.value.users.filter(user => user.roleIds.includes(role.id)).length,
       permissionCount: role.permissionIds.length,
       menuCount: role.permissionIds.filter(permissionId => database.value.menus.some(menu => menu.permissionId === permissionId)).length,

@@ -141,6 +141,8 @@ button, input, textarea, select { font: inherit; }
 .tree-row { display: flex; gap: 8px; align-items: center; min-height: 38px; padding: 5px 8px; border-radius: 8px; cursor: default; }
 .tree-row:hover { background: #f0f5ff; }
 .tree-row.is-selected { background: #eaf2ff; }
+.tree-row.is-derived-role { border: 1px solid #c8d9fb; background: #f1f6ff; box-shadow: inset 3px 0 0 #4c75d8; }
+.tree-row.is-derived-role:hover { background: #e9f1ff; }
 .tree-row.is-derived-core { border: 1px solid #cfe0ff; background: #edf5ff; box-shadow: inset 3px 0 0 #246bfd; }
 .tree-row.is-derived-core:hover { background: #e5f0ff; }
 .tree-row.is-menu-optional { border: 1px solid #f1d39b; background: #fff8e9; box-shadow: inset 3px 0 0 #e29a22; }

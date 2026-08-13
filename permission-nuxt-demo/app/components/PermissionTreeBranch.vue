@@ -21,7 +21,7 @@ const hasChildren = computed(() => Boolean(props.node.children?.length))
 
 <template>
   <div class="tree-node" role="treeitem" :aria-expanded="hasChildren ? expanded.has(node.id) : undefined">
-    <div class="tree-row" :class="{ 'is-group': hasChildren, 'is-leaf': !hasChildren, 'is-derived-core': node.grantState === 'CORE', 'is-menu-optional': node.grantState === 'OPTIONAL' }" :style="{ '--tree-depth': depth }" :title="node.grantHint">
+    <div class="tree-row" :class="{ 'is-group': hasChildren, 'is-leaf': !hasChildren, 'is-derived-role': node.grantState === 'ROLE', 'is-derived-core': node.grantState === 'CORE', 'is-menu-optional': node.grantState === 'OPTIONAL' }" :style="{ '--tree-depth': depth }" :title="node.grantHint">
       <span class="tree-indent" />
       <button v-if="hasChildren" type="button" class="tree-toggle" :aria-label="expanded.has(node.id) ? '收起' : '展开'" @click="emit('toggle-expanded', node.id)">
         <UIcon :name="expanded.has(node.id) ? 'i-lucide-chevron-down' : 'i-lucide-chevron-right'" size="13" />
@@ -39,7 +39,7 @@ const hasChildren = computed(() => Boolean(props.node.children?.length))
         <small v-if="node.caption">{{ node.caption }}</small>
       </div>
       <div v-if="node.grantState || node.riskLevel" class="tree-badges">
-        <UBadge v-if="node.grantState" :color="node.grantState === 'CORE' ? 'primary' : 'warning'" variant="subtle" size="sm" :label="node.grantLabel || node.grantState" :title="node.grantHint" />
+        <UBadge v-if="node.grantState" :color="node.grantState === 'OPTIONAL' ? 'warning' : 'primary'" variant="subtle" size="sm" :label="node.grantLabel || node.grantState" :title="node.grantHint" />
         <UBadge v-if="node.riskLevel" :color="riskColor(node.riskLevel) as any" variant="subtle" size="sm" :label="node.riskLevel" />
       </div>
       <span v-else-if="hasChildren" class="tree-count">{{ state.ids.length }}</span>
